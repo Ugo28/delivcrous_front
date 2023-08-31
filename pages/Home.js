@@ -1,7 +1,6 @@
 import React from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, Image,ScrollView} from 'react-native';
 import { useFonts, Montserrat_400Regular, Montserrat_500Medium, Montserrat_700Bold, Montserrat_600SemiBold} from '@expo-google-fonts/montserrat';
-import logo from '../assets/logo.jpg';
 import categoriesdata from '../assets/data/catégoriesdata';
 
 export default Home = () => {
@@ -30,7 +29,6 @@ export default Home = () => {
       <View style={styles.titleWrapper}> 
         <Text style={styles.title}>Delivecrous</Text>
       </View>
-
 
       {/*popular*/}
       <View style={styles.popularWrapper}>
