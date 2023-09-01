@@ -1,109 +1,137 @@
 import React from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, Text, Image,ScrollView} from 'react-native';
-import { useFonts, Montserrat_400Regular, Montserrat_500Medium, Montserrat_700Bold, Montserrat_600SemiBold} from '@expo-google-fonts/montserrat';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import categoriesdata from '../assets/data/catégoriesdata';
+import { useNavigation } from '@react-navigation/native';
 
-export default Home = () => {
+export default function Home() {
 
-  const renderCategoriesItem=({ item })=>{
-    return(
-      <View>
-        <Image source={item.image}/>
-        <Text>{item.title}</Text>
+  const renderCategoriesItem = ({ item }) => {
+    return (
+      <View style={styles.categoryCard }>
+        <Image source={item.image} style={styles.categoryImage} />
+        <TouchableOpacity style={styles.categoryInfo} onPress={() => handleCategoryPress(item)}>
+          <Text style={styles.categoryTitle}>{item.title}</Text>
+          <Text style={styles.categoryDescr}>{item.description}</Text>
+          <Text style={styles.categoriePrice}>{item.prix}€</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => {
+            // Ajoutez ici le code que vous souhaitez exécuter lorsque le bouton "+" est pressé.
+          }}
+        >
+          <Text style={styles.addButtonText}>+</Text>
+        </TouchableOpacity>
       </View>
     );
   };
+  const navigation = useNavigation();
 
-
-  let [fontsLoaded] = useFonts({
-    Montserrat_400Regular,
-    Montserrat_500Medium,
-    Montserrat_600SemiBold,
-    Montserrat_700Bold,
-  });
+  const handleCategoryPress = (item) => {
+    navigation.navigate('DataDetails', { item });
+  };
 
   return (
-    <View style = {styles.container}>
+    <View style={styles.container}>
       <ScrollView>
-
-      <View style={styles.titleWrapper}> 
-        <Text style={styles.title}>Delivecrous</Text>
-      </View>
-
-      {/*popular*/}
-      <View style={styles.popularWrapper}>
-        <Text style={styles.categoriestext}>Carte</Text>
-        {categoriesdata.map(item =>(
-          <View style={[styles.popularCardWrapper,{marginTop: item.id ==1 ? 10 : 20,}]}>
-            <View>
-              <View>
-                <View style={styles.populartitleswrapper}>
-                  <Text style ={styles.populartitletitle}>{item.title}</Text>
-                  <Text style ={styles.populartitleweight}>Poids : {item.weight}</Text>
-                </View>
-              </View>
+        {/* Popular */}
+        <View style={styles.popularWrapper}>
+          <Text style={styles.categoriestext}>Carte</Text>
+          {categoriesdata.map(item => (
+            <View key={item.id} style={styles.popularCardWrapper}>
+              {renderCategoriesItem({ item })}
             </View>
-            <View style={styles.popularcardright}>
-              <Image source={item.image} style={styles.popularcardimage}/>
-            </View>
-          </View>
-        ))}
-      </View>
+          ))}
+        </View>
       </ScrollView>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container:{
-    flex:1,
+  container: {
+    backgroundColor: '#F5F5F5',
   },
-  titleWrapper:{
-    marginTop:30,
-    paddingHorizontal:20,
+  titleWrapper: {
+    marginTop: 30,
+    paddingHorizontal: 20,
   },
-  title:{
-    fontFamily:'Montserrat_700Bold',
+  title: {
     fontSize: 32,
+    fontWeight: 'bold',
+    color: '#333',
   },
-  categoriesview:{
-    marginTop:20,
-    paddingHorizontal:20
+  categoriestext: {
+    fontWeight: 'semibold',
+    fontSize: 30,
+    marginVertical: 20,
+    marginLeft: 20,
   },
-  categoriestext:{
-    fontFamily:'Montserrat_600SemiBold',
-    fontSize:16
+  popularWrapper: {
+    paddingHorizontal: 20,
   },
-  popularWrapper:{
-    paddingTop:30,
-    paddingHorizontal:20,
+  popularCardWrapper: {
+    backgroundColor: '#FFF',
+    borderRadius: 10,
+    marginBottom: 20,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    position: 'relative', // Pour permettre un positionnement absolu des éléments enfants
+  },
+  categoryCard: {
+    paddingTop: 10,
+    paddingBottom: 0,
+    alignItems: 'center',
+    flexDirection: 'row', // Pour afficher les éléments côte à côte
+    justifyContent: 'space-between', // Pour les espacer
+  },
+  categoryImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+  },
+  categoryInfo: {
+    paddingLeft:10,
+    flex: 1, // Pour occuper tout l'espace disponible à gauche de l'image
+  },
+  categoryTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  categoryDescr: {
+    paddingTop: 10,
+    paddingBottom:5,
 
+    fontSize: 15,
+    color: '#777',
   },
-  popularCardWrapper:{
-    borderRadius:20,
-    paddingTop:20,
-    paddingLeft:20,
-    flexDirection:'row',
-    overflow:'hidden',
+  categoriePrice: {
+    paddingTop: 5,
+    paddingBottom:10,
+    left:0,
+    fontSize: 20,
+    fontWeight:'bold',
+    color: '#777',
   },
-  populartitleswrapper:{
-    marginTop:20,
+  addButton: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#FFC700',
+    width: 85,
+    height: 40,
+    borderTopLeftRadius: 10,
+    borderBottomRightRadius:10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  populartitletitle:{
-    fontFamily:'Montserrat_600SemiBold',
-    fontSize:16,
+  addButtonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'black',
   },
-  populartitleweight:{
-    fontFamily:'Montserrat_500Medium',
-    fontSize:12,
-  },
-  popularcardright:{
-    marginLeft:40,
-  },
-  popularcardimage:{
-    width:210,
-    height:125,
-    resizeMode:'contain',
-  }
-
 });
