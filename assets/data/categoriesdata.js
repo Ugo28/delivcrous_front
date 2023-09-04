@@ -11,7 +11,7 @@ const categoriesdata = [
         title: "Pâtes bolognaise",
         description:"Délicieuse pâtes avec sa viande tendre et sa sauce onctueuse.",
         prix: "14",
-        category:'pâtes'
+        category:'Pâtes'
     },
     {
         id:2,
@@ -28,7 +28,7 @@ const categoriesdata = [
         title: "Margherita",
         description:"Incroyable pizza avec sa mozzarella moeulleuse et sa sauce tomate onctueuse.",
         prix: "12",
-        category:'pizza'
+        category:'Pizza'
 
     },
     {
@@ -37,7 +37,7 @@ const categoriesdata = [
         title: "Sushi",
         description:"Riz savoureux avec saumon frais.",
         prix: "8",
-        category:'asiatique'
+        category:'Asiatique'
 
     },
     {
@@ -46,7 +46,7 @@ const categoriesdata = [
         title: "Burger",
         description:"Excellent pain de boulanger avec son steack haché angus.",
         prix: "12",
-        category:'burger'
+        category:'Burger'
 
     },
 ]

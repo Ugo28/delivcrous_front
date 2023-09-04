@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import categoriesdata from '../assets/data/catégoriesdata';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity,FlatList } from 'react-native';
+import categoriesdata from '../assets/data/categoriesdata';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { TextInput } from 'react-native';
@@ -9,12 +9,11 @@ import { TextInput } from 'react-native';
 
 export default function Home() {
 
+  const [searchText, setSearchText] = useState('');
+
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const categories = ["pâtes", 'Tacos', "pizza", "asiatique", "burger"];
-
-
-  const [cartCount, setCartCount] = useState(0);
+  const categories = ["Pâtes", 'Tacos', "Pizza", "Asiatique", "Burger"];
 
   const renderCategoriesItem = ({ item }) => {
     return (
@@ -28,7 +27,6 @@ export default function Home() {
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => {
-            setCartCount(cartCount + 1);
           }}
         >
           <Text style={styles.addButtonText}>+</Text>
@@ -42,42 +40,55 @@ export default function Home() {
     navigation.navigate('DataDetails', { item });
   };
 
-  const handleCartPress = () => {
-    navigation.navigate('Cart');
-  };
-
-  const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
+  const handleCategoryToggle = (category) => {
+    if (selectedCategory === category) {
+      setSelectedCategory(null); // Si la catégorie est déjà sélectionnée, désélectionnez-la
+    } else {
+      setSelectedCategory(category); // Sinon, sélectionnez-la
+    }
   };
 
   const filteredCategoriesData = selectedCategory
-  ? categoriesdata.filter((item) => item.category === selectedCategory)
-  : categoriesdata;
+    ? categoriesdata.filter((item) => item.category === selectedCategory)
+    : categoriesdata;
 
 
   return (
     <View style={styles.container}>
-      <View style={styles.categoryButtons}>
+      <View style={styles.searchBar}>
+        <Feather name="search" size={24} color="black" style={styles.icon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Rechercher..."
+          value={searchText}
+          onChangeText={(text) => setSearchText(text)}
+        />
+      </View>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.filterScrollView}
+      >
         {categories.map((category) => (
           <TouchableOpacity
             key={category}
             style={[
               styles.categoryButton,
-              selectedCategory === category && styles.selectedCategoryButton,
+              selectedCategory === category
+                ? styles.selectedCategoryButton
+                : styles.unselectedCategoryButton,
             ]}
-            onPress={() => handleCategorySelect(category)}
+            onPress={() => handleCategoryToggle(category)}
           >
             <Text
-              style={[
-                styles.categoryButtonText,
-                selectedCategory === category && styles.selectedCategoryButtonText,
-              ]}
+              style ={styles.categoryButtonText}
             >
               {category}
             </Text>
           </TouchableOpacity>
         ))}
-      </View>
+      </ScrollView>
+
 
       <ScrollView>
         {/* Popular */}
@@ -90,10 +101,6 @@ export default function Home() {
           ))}
         </View>
       </ScrollView>
-      <TouchableOpacity style={styles.cartButton} onPress={handleCartPress}>
-        <Feather name="shopping-cart" size={24} color="black" />
-        {cartCount > 0 && <View style={styles.cartCounter}><Text style={styles.cartCounterText}>{cartCount}</Text></View>}
-      </TouchableOpacity>
     </View>
   );
 }
@@ -235,7 +242,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#333",
   },
-  selectedCategoryButtonText: {
-    color: "white",
-  },  
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+  },
+
 });
