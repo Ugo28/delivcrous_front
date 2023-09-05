@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity,FlatList } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import categoriesdata from '../assets/data/categoriesdata';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { TextInput } from 'react-native';
+import categories from '../assets/data/categories';
 
 
 
 export default function Home() {
 
+
+  const [cartItems, setCartItems] = useState([]);
+
   const [searchText, setSearchText] = useState('');
 
   const [selectedCategory, setSelectedCategory] = useState(null);
-
-  const categories = ["Pâtes", 'Tacos', "Pizza", "Asiatique", "Burger"];
 
   const renderCategoriesItem = ({ item }) => {
     return (
@@ -27,6 +29,7 @@ export default function Home() {
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => {
+            addToCart(item)
           }}
         >
           <Text style={styles.addButtonText}>+</Text>
@@ -42,9 +45,9 @@ export default function Home() {
 
   const handleCategoryToggle = (category) => {
     if (selectedCategory === category) {
-      setSelectedCategory(null); // Si la catégorie est déjà sélectionnée, désélectionnez-la
+      setSelectedCategory(null);
     } else {
-      setSelectedCategory(category); // Sinon, sélectionnez-la
+      setSelectedCategory(category);
     }
   };
 
@@ -52,55 +55,75 @@ export default function Home() {
     ? categoriesdata.filter((item) => item.category === selectedCategory)
     : categoriesdata;
 
+  const filteredDataBySearch = filteredCategoriesData.filter((item) => {
+    const itemName = item.title.toLowerCase();
+    return itemName.includes(searchText.toLowerCase());
+  });
+
+  const addToCart = (item) => {
+    setCartItems([...cartItems, item]);
+  };
+
+  const removeFromCart = (index) =>{
+    setCartItems(cartItems.splice(index, 1));
+  }
 
   return (
     <View style={styles.container}>
-      <View style={styles.searchBar}>
-        <Feather name="search" size={24} color="black" style={styles.icon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Rechercher..."
-          value={searchText}
-          onChangeText={(text) => setSearchText(text)}
-        />
-      </View>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.filterScrollView}
-      >
-        {categories.map((category) => (
-          <TouchableOpacity
-            key={category}
-            style={[
-              styles.categoryButton,
-              selectedCategory === category
-                ? styles.selectedCategoryButton
-                : styles.unselectedCategoryButton,
-            ]}
-            onPress={() => handleCategoryToggle(category)}
-          >
-            <Text
-              style ={styles.categoryButtonText}
-            >
-              {category}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-
       <ScrollView>
+        <View style={styles.searchBar}>
+          <Feather name="search" size={24} color="black" style={styles.icon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Rechercher..."
+            value={searchText}
+            onChangeText={(text) => setSearchText(text)}
+          />
+        </View>
+
+        <Text style={styles.CategoryText}>Catégories</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        >
+          {categories.map((category) => (
+            <TouchableOpacity
+              key={category.id}
+              style={[
+                styles.categoryButton,
+                selectedCategory === category.category
+                  ? styles.selectedCategoryButton
+                  : styles.unselectedCategoryButton,
+              ]}
+              onPress={() => handleCategoryToggle(category.category)}
+            >
+              <Text style={styles.categoryButtonText}>{category.category}</Text>
+              <Image source={category.image} style={styles.logoCategory} />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
         {/* Popular */}
         <View style={styles.popularWrapper}>
-          <Text style={styles.categoriestext}>Carte</Text>
-          {filteredCategoriesData.map(item => (
+          <Text style={styles.categoriestext}>La carte</Text>
+          {filteredDataBySearch.map(item => (
             <View key={item.id} style={styles.popularCardWrapper}>
               {renderCategoriesItem({ item })}
             </View>
           ))}
         </View>
       </ScrollView>
+      <TouchableOpacity
+          style={styles.cartButton}
+          onPress={() => navigation.push('Panier', {cartItems,removeFromCart})}
+        >
+          <Feather name="shopping-cart" size={24} color="black" />
+          {cartItems.length > 0 && (
+            <View style={styles.cartCounter}>
+              <Text style={styles.cartCounterText}>{cartItems.length}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
     </View>
   );
 }
@@ -227,18 +250,21 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   categoryButton: {
+    height: 100,
+    width: 130,
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 20,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#E0E0E0",
+    alignItems: 'center'
   },
   selectedCategoryButton: {
     backgroundColor: "#FFC700",
   },
   categoryButtonText: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#333",
   },
@@ -257,5 +283,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderBottomWidth: 1,
   },
+  logoCategory: {
+    height: 50,
+    width: 50,
+  },
+  CategoryText: {
+    fontWeight: 'semibold',
+    fontSize: 30,
+    marginVertical: 20,
+    marginLeft: 20,
+  }
 
 });

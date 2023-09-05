@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import logo from './assets/logo.png';
 import DataDetails from './pages/DataDetails';
 import {Feather} from "@expo/vector-icons";
+import Panier from './pages/Panier';
 
 
 
@@ -42,6 +43,7 @@ const App = () => {
                         )
                     })}
                 />
+                <Stack.Screen name="Panier" options={{headerTitle:'Mon Panier'}} component={Panier} />
                 <Stack.Screen name="DataDetails" options={{headerTitle:''}} component={DataDetails} />
                 <Stack.Screen name="PageAccueil" options={{ headerShown: false, headerTitle: "Se connecter" }} component={PageAccueil} />
                 <Stack.Screen name="PageCreationCompte" options={{ headerTitle: "S'inscrire" }} component={PageCreationCompte} />

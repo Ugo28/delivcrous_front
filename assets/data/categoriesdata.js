@@ -10,7 +10,7 @@ const categoriesdata = [
         image:bolognaise,
         title: "Pâtes bolognaise",
         description:"Délicieuse pâtes avec sa viande tendre et sa sauce onctueuse.",
-        prix: "14",
+        prix: 14,
         category:'Pâtes'
     },
     {
@@ -18,7 +18,7 @@ const categoriesdata = [
         image:tacos,
         title: "Tacos",
         description:"Giga tacos 3 viandes.",
-        prix: "9",
+        prix: 9,
         category:'Tacos'
 
     },
@@ -27,7 +27,7 @@ const categoriesdata = [
         image: pizza,
         title: "Margherita",
         description:"Incroyable pizza avec sa mozzarella moeulleuse et sa sauce tomate onctueuse.",
-        prix: "12",
+        prix: 12,
         category:'Pizza'
 
     },
@@ -36,7 +36,7 @@ const categoriesdata = [
         image: sushi,
         title: "Sushi",
         description:"Riz savoureux avec saumon frais.",
-        prix: "8",
+        prix: 8,
         category:'Asiatique'
 
     },
@@ -45,7 +45,7 @@ const categoriesdata = [
         image: burger,
         title: "Burger",
         description:"Excellent pain de boulanger avec son steack haché angus.",
-        prix: "12",
+        prix: 12,
         category:'Burger'
 
     },
