@@ -39,11 +39,28 @@ const PageCreationCompte = () => {
                     <Text style={styles.appName}>Créer un compte</Text>
                 </View>
 
-                <View style={styles.userContainer}>
+                <View style={styles.ConnexionContainer}>
                     <Feather name="user" size={24} color="black" style={styles.icon} />
                     <TextInput placeholder="Nom d'utilisateur" style={styles.input} />
                 </View>
-                <View style={styles.mailContainer}>
+                
+                <View style={styles.ConnexionContainer}>
+                    <Feather name="smartphone" size={24} color="black" style={styles.icon} />
+                    <TextInput
+                        placeholder="Numéro de téléphone"
+                        style={styles.input}
+                    />
+                </View>
+
+                <View style={styles.ConnexionContainer}>
+                    <Feather name="home" size={24} color="black" style={styles.icon} />
+                    <TextInput
+                        placeholder="Adresse postale"
+                        style={styles.input}
+                    />
+                </View>
+
+                <View style={styles.ConnexionContainer}>
                     <Feather name="mail" size={24} color="black" style={styles.icon} />
                     <TextInput
                         placeholder="Adresse mail"
@@ -51,7 +68,7 @@ const PageCreationCompte = () => {
                     />
                 </View>
 
-                <View style={styles.passwordContainer}>
+                <View style={styles.ConnexionContainer}>
                     <Feather name="lock" size={24} color="black" style={styles.icon} />
                     <TextInput
                         placeholder="Mot de passe"
@@ -62,7 +79,7 @@ const PageCreationCompte = () => {
                         <Feather name={showPassword1 ? 'eye-off' : 'eye'} size={24} color="black" />
                     </TouchableOpacity>
                 </View>
-                <View style={styles.passwordContainer}>
+                <View style={styles.ConnexionContainer}>
                     <Feather name="lock" size={24} color="black" style={styles.icon} />
                     <TextInput
                         placeholder="Confirmation mot de passe"
@@ -90,8 +107,8 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     container: {
-        paddingTop: 60,
         flex: 1,
+        paddingTop: 60,
         alignItems: 'center',
     },
     logo: {
@@ -122,16 +139,6 @@ const styles = StyleSheet.create({
     loginText: {
         marginTop: 20,
     },
-    passwordContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 10,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 20,
-        width: '80%',
-        paddingHorizontal: 10,
-    },
     passwordInput: {
         paddingLeft: 10,
         flex: 1,
@@ -139,17 +146,7 @@ const styles = StyleSheet.create({
     showPasswordButton: {
         padding: 10,
     },
-    mailContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 10,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 20,
-        width: '80%',
-        paddingHorizontal: 10,
-    },
-    userContainer: {
+    ConnexionContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: 10,

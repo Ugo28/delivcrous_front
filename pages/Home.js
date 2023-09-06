@@ -10,7 +10,6 @@ import categories from '../assets/data/categories';
 
 export default function Home() {
 
-
   const [cartItems, setCartItems] = useState([]);
 
   const [searchText, setSearchText] = useState('');
@@ -127,6 +126,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#F5F5F5',
+    flex:1
   },
   titleWrapper: {
     marginTop: 30,

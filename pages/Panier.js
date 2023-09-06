@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity,Image } from 'react-native';
 
 export default function Panier({ route }) {
   const { cartItems, setCartItems } = route.params;
@@ -12,10 +12,11 @@ export default function Panier({ route }) {
         <Text style={styles.emptyCartText}>Votre panier est vide.</Text>
       ) : (
         <FlatList
-          data={cart}
+          data={cartItems}
           keyExtractor={(item,index) => index.toString()}
           renderItem={({ item, index }) => (
             <View style={styles.cartItem}>
+              <Image source ={item.image}/>
               <Text style={styles.itemName}>{item.title}</Text>
               <TouchableOpacity
                 style={styles.removeButton}
