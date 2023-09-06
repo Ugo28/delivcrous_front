@@ -2,16 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 
 export default function Panier({ route }) {
-  const { cartItems, removeFromCart } = route.params;
+  const { cartItems, setCartItems } = route.params;
   const [cart, setCart] = useState(cartItems);
-
-  /*const removeFromCart = (index) => {
-    console.log(index);
-    const updatedCart = [...cart];
-    console.log(updatedCart);
-    updatedCart.splice(index, 1); // Supprimer l'élément à l'indice spécifié
-    setCart(updatedCart); // Mettre à jour le panier
-  };*/
 
   return (
     <View style={styles.container}>
@@ -28,7 +20,8 @@ export default function Panier({ route }) {
               <TouchableOpacity
                 style={styles.removeButton}
                 onPress={() => {
-                  removeFromCart(index);
+                  setCartItems(cartItems.filter((data, i) => i !== index)); //maj dans la page Home
+                  setCart(cart.filter((data, i) => i !== index));//maj dans le panier
                 }
                 }
               >
