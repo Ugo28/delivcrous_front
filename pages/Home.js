@@ -64,10 +64,6 @@ export default function Home() {
     setCartItems([...cartItems, item]);
   };
 
-  const removeFromCart = (index) =>{
-    setCartItems(cartItems.splice(index, 1));
-  }
-
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -115,7 +111,7 @@ export default function Home() {
       </ScrollView>
       <TouchableOpacity
           style={styles.cartButton}
-          onPress={() => navigation.push('Panier', {cartItems,removeFromCart})}
+          onPress={() => navigation.push('Panier', {cartItems, setCartItems})}
         >
           <Feather name="shopping-cart" size={24} color="black" />
           {cartItems.length > 0 && (
