@@ -17,6 +17,9 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const renderCategoriesItem = ({ item }) => {
+    // Trouver la quantité de l'article dans le panier
+    const itemQuantity = cartItems.filter((cartItem) => cartItem.id === item.id).length;
+  
     return (
       <View style={styles.categoryCard}>
         <Image source={item.image} style={styles.categoryImage} />
@@ -25,21 +28,49 @@ export default function Home() {
           <Text style={styles.categoryDescr}>{item.description}</Text>
           <Text style={styles.categoriePrice}>{item.prix}€</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => {
-            addToCart(item)
-          }}
-        >
-          <Text style={styles.addButtonText}>+</Text>
-        </TouchableOpacity>
+        {itemQuantity > 0 ? (
+          <View style={styles.adddelButton}>
+            <TouchableOpacity
+              style={styles.adddelstyleButton}
+              onPress={() => {
+                // Retirez un article du panier
+                removeFromCart(item);
+              }}
+            >
+              <Text style={styles.ButtonText}>-</Text>
+            </TouchableOpacity>
+            <Text style={styles.quantityText}>{itemQuantity}</Text>
+            <TouchableOpacity
+            style={styles.adddelstyleButton}
+            onPress={() => {
+              // Ajoutez un article au panier
+              addToCart(item);
+            }}
+          >
+            <Text style={styles.ButtonText}>+</Text>
+          </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => {
+              // Ajoutez un article au panier
+              addToCart(item);
+            }}
+          >
+            <Text style={styles.ButtonText}>+</Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
   };
+  
+
   const navigation = useNavigation();
 
   const handleCategoryPress = (item) => {
-    navigation.navigate('DataDetails', { item });
+    /*navigation.navigate('DataDetails', { item });*/
+    navigation.push('DataDetails', { item, cartItems, setCartItems})
   };
 
   const handleCategoryToggle = (category) => {
@@ -63,6 +94,17 @@ export default function Home() {
     setCartItems([...cartItems, item]);
   };
 
+  const removeFromCart = (itemToRemove) => {
+    const itemIndex = cartItems.findIndex((item) => item.id === itemToRemove.id);
+  
+    if (itemIndex !== -1) {
+      const updatedCart = [...cartItems];
+      updatedCart.splice(itemIndex, 1); // Retirez un élément à l'index trouvé
+      setCartItems(updatedCart);
+    }
+  };
+  
+  
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -109,16 +151,16 @@ export default function Home() {
         </View>
       </ScrollView>
       <TouchableOpacity
-          style={styles.cartButton}
-          onPress={() => navigation.push('Panier', {cartItems, setCartItems})}
-        >
-          <Feather name="shopping-cart" size={24} color="black" />
-          {cartItems.length > 0 && (
-            <View style={styles.cartCounter}>
-              <Text style={styles.cartCounterText}>{cartItems.length}</Text>
-            </View>
-          )}
-        </TouchableOpacity>
+        style={styles.cartButton}
+        onPress={() => navigation.push('Panier', { cartItems, setCartItems })}
+      >
+        <Feather name="shopping-cart" size={24} color="black" />
+        {cartItems.length > 0 && (
+          <View style={styles.cartCounter}>
+            <Text style={styles.cartCounterText}>{cartItems.length}</Text>
+          </View>
+        )}
+      </TouchableOpacity>
     </View>
   );
 }
@@ -126,7 +168,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#F5F5F5',
-    flex:1
+    flex: 1
   },
   titleWrapper: {
     marginTop: 30,
@@ -181,7 +223,6 @@ const styles = StyleSheet.create({
   categoryDescr: {
     paddingTop: 10,
     paddingBottom: 5,
-
     fontSize: 15,
     color: '#777',
   },
@@ -205,10 +246,32 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  addButtonText: {
+  ButtonText: {
     fontSize: 20,
     fontWeight: 'bold',
     color: 'black',
+  },
+  adddelButton: {
+    position: 'absolute',
+    bottom: 0,
+    right: 2,
+    width: 85,
+    height: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  adddelstyleButton:{
+    backgroundColor: '#FFC700',
+    width: 30,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius : 100
+
+  },
+  quantityText:{
+    padding:8
   },
   cartButton: {
     position: 'absolute',

@@ -6,49 +6,51 @@ import burger from '../images/burger.png';
 
 const categoriesdata = [
     {
-        id:1,
-        image:bolognaise,
+        id: 1,
+        image: bolognaise,
         title: "Pâtes bolognaise",
-        description:"Délicieuse pâtes avec sa viande tendre et sa sauce onctueuse.",
+        description: "Délicieuse pâtes avec sa viande tendre et sa sauce onctueuse.",
         prix: 14,
-        category:'Pâtes'
+        category: 'Pâtes',
+        allergenes: ['gluten', 'lactose', 'céleri', 'œufs']
     },
     {
-        id:2,
-        image:tacos,
+        id: 2,
+        image: tacos,
         title: "Tacos",
-        description:"Giga tacos 3 viandes.",
+        description: "Giga tacos 3 viandes.",
         prix: 9,
-        category:'Tacos'
-
+        category: 'Tacos',
+        allergenes: ['gluten', 'lactose', 'soja', 'moutarde']
     },
     {
-        id:3,
+        id: 3,
         image: pizza,
         title: "Margherita",
-        description:"Incroyable pizza avec sa mozzarella moeulleuse et sa sauce tomate onctueuse.",
+        description: "Incroyable pizza avec sa mozzarella moelleuse et sa sauce tomate onctueuse.",
         prix: 12,
-        category:'Pizza'
-
+        category: 'Pizza',
+        allergenes: ['gluten', 'lactose', 'noix', 'soja']
     },
     {
-        id:4,
+        id: 4,
         image: sushi,
         title: "Sushi",
-        description:"Riz savoureux avec saumon frais.",
+        description: "Riz savoureux avec saumon frais.",
         prix: 8,
-        category:'Asiatique'
-
+        category: 'Asiatique',
+        allergenes: ['poisson', 'crustacés', 'soja', 'sésame']
     },
     {
-        id:5,
+        id: 5,
         image: burger,
         title: "Burger",
-        description:"Excellent pain de boulanger avec son steack haché angus.",
+        description: "Excellent pain de boulanger avec son steak haché angus.",
         prix: 12,
-        category:'Burger'
-
+        category: 'Burger',
+        allergenes: ['gluten', 'lactose', 'moutarde', 'céleri']
     },
 ]
+
 
 export default categoriesdata;

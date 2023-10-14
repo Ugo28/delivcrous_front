@@ -3,14 +3,15 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Platform, K
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons'; // Import de l'icône Feather
 import logo from '../assets/logo.png';
-import { useFonts, Montserrat_700Bold,Montserrat_600SemiBold,Montserrat_400Regular} from '@expo-google-fonts/montserrat';
-import AppLoading from 'expo-app-loading';
 
-
-const PageAccueil = () => {
+const PageAccueil = ({ isconnected, setIsConnected }) => {
   const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(false); // État pour afficher ou masquer le mot de passe
 
+  const handleLogin = () => {
+    setIsConnected(true);
+    navigation.navigate('Carte');
+  };
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -19,58 +20,47 @@ const PageAccueil = () => {
     navigation.navigate('PageCreationCompte');
   };
 
-  let [fontsLoaded] = useFonts({
-    Montserrat_700Bold,
-    Montserrat_600SemiBold,
-    Montserrat_400Regular,
-  });
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      <View style={styles.center}>
+        <Image source={logo} style={styles.logo} />
+        <Text style={styles.titreDelivecrous}>Delivecrous</Text>
+        <Text style={styles.appName}>Connexion</Text>
+      </View>
 
+      <View style={styles.mailContainer}>
+        <Feather name="mail" size={24} color="black" style={styles.icon} />
+        <TextInput
+          placeholder="Adresse mail"
+          style={styles.input}
+        />
+      </View>
 
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  } else {
-    return (
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}
-      >
-        <View style={styles.center}>
-          <Image source={logo} style={styles.logo} />
-          <Text style={styles.titreDelivecrous}>Delivecrous</Text>
-          <Text style={styles.appName}>Connexion</Text>
-        </View>
-
-        <View style={styles.mailContainer}>
-          <Feather name="mail" size={24} color="black" style={styles.icon} />
-          <TextInput
-            placeholder="Adresse mail"
-            style={styles.input}
-          />
-        </View>
-
-        <View style={styles.passwordContainer}>
-          <Feather name="lock" size={24} color="black" style={styles.icon} />
-          <TextInput
-            placeholder="Mot de passe"
-            secureTextEntry={!showPassword}
-            style={styles.passwordInput}
-          />
-          <TouchableOpacity onPress={toggleShowPassword} style={styles.showPasswordButton}>
-            <Feather name={showPassword ? 'eye-off' : 'eye'} size={24} color="black" />
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Se connecter</Text>
+      <View style={styles.passwordContainer}>
+        <Feather name="lock" size={24} color="black" style={styles.icon} />
+        <TextInput
+          placeholder="Mot de passe"
+          secureTextEntry={!showPassword}
+          style={styles.passwordInput}
+        />
+        <TouchableOpacity onPress={toggleShowPassword} style={styles.showPasswordButton}>
+          <Feather name={showPassword ? 'eye-off' : 'eye'} size={24} color="black" />
         </TouchableOpacity>
-        <View style={styles.createAccountContainer}>
-          <Text style={styles.createAccountText}>
-            Vous n'avez pas de compte ?<Text style={styles.linkText} onPress={goToCreationCompte}> Créer un compte</Text>
-          </Text>
-        </View>
-      </KeyboardAvoidingView>
-    );
-  }
-};
+      </View>
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Se connecter</Text>
+      </TouchableOpacity>
+      <View style={styles.createAccountContainer}>
+        <Text style={styles.createAccountText}>
+          Vous n'avez pas de compte ?<Text style={styles.linkText} onPress={goToCreationCompte}> Créer un compte</Text>
+        </Text>
+      </View>
+    </KeyboardAvoidingView>
+  );
+}
 
 const styles = StyleSheet.create({
   center: {
@@ -82,7 +72,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   titreDelivecrous: {
-    fontFamily: 'Montserrat_700Bold',
+    fontWeight:'bold',
     fontSize: 40,
   },
   logo: {
@@ -90,7 +80,7 @@ const styles = StyleSheet.create({
     height: 150,
   },
   appName: {
-    fontFamily:'Montserrat_600SemiBold',
+    fontWeight:'600',
     fontSize: 24,
     marginTop: 40,
   },
@@ -138,7 +128,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   createAccountText: {
-    fontFamily:'Montserrat_400Regular',
+    fontWeight:'400',
     marginTop: 20,
   },
   createAccountContainer: {
@@ -147,7 +137,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   linkText: {
-    fontFamily:'Montserrat_700Bold',
+    fontWeight:'700',
     color: '#007bff',
   },
 

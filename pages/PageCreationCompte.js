@@ -2,17 +2,25 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView } from 'react-native';
 import logo from '../assets/logo.png';
 import { Feather } from '@expo/vector-icons';
-import { useFonts, Montserrat_700Bold, Montserrat_600SemiBold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
-import AppLoading from 'expo-app-loading';
+import ConfirmationInscription from '../components/ConfirmationInscription';
+import { useNavigation } from '@react-navigation/native';
 
-const PageCreationCompte = () => {
 
-    let [fontsLoaded] = useFonts({
-        Montserrat_700Bold,
-        Montserrat_600SemiBold,
-        Montserrat_400Regular,
-    });
-    
+const PageCreationCompte = ({ isconnected, setIsConnected }) => {
+    const navigation = useNavigation();
+
+    const [showConfirmationInscr, setshowConfirmationInscr] = useState(false);
+
+    const logout = () => {
+        setshowConfirmationInscr(true);
+    };
+
+    const handleLogin = () => {
+        setIsConnected(true);
+        navigation.navigate('Carte');
+    };
+
+
     const [showPassword1, setShowPassword1] = useState(false);
 
     const toggleShowPassword1 = () => {
@@ -25,85 +33,85 @@ const PageCreationCompte = () => {
         setShowPassword2(!showPassword2);
     };
 
-    if (!fontsLoaded) {
-        return <AppLoading />;
-    } else {
-        return (
-            <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={styles.container}
-            >
-                <View style={styles.center}>
-                    <Image source={logo} style={styles.logo} />
-                    <Text style={styles.titreDelivecrous}>Delivecrous</Text>
-                    <Text style={styles.appName}>Créer un compte</Text>
-                </View>
+    return (
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.container}
+        >
+            <View style={styles.center}>
+                <Image source={logo} style={styles.logo} />
+                <Text style={styles.titreDelivecrous}>Delivecrous</Text>
+                <Text style={styles.appName}>Créer un compte</Text>
+            </View>
 
-                <View style={styles.ConnexionContainer}>
-                    <Feather name="user" size={24} color="black" style={styles.icon} />
-                    <TextInput placeholder="Nom d'utilisateur" style={styles.input} />
-                </View>
-                
-                <View style={styles.ConnexionContainer}>
-                    <Feather name="smartphone" size={24} color="black" style={styles.icon} />
-                    <TextInput
-                        placeholder="Numéro de téléphone"
-                        style={styles.input}
-                    />
-                </View>
+            <View style={styles.ConnexionContainer}>
+                <Feather name="user" size={24} color="black" style={styles.icon} />
+                <TextInput placeholder="Nom d'utilisateur" style={styles.input} />
+            </View>
 
-                <View style={styles.ConnexionContainer}>
-                    <Feather name="home" size={24} color="black" style={styles.icon} />
-                    <TextInput
-                        placeholder="Adresse postale"
-                        style={styles.input}
-                    />
-                </View>
+            <View style={styles.ConnexionContainer}>
+                <Feather name="smartphone" size={24} color="black" style={styles.icon} />
+                <TextInput
+                    placeholder="Numéro de téléphone"
+                    style={styles.input}
+                />
+            </View>
 
-                <View style={styles.ConnexionContainer}>
-                    <Feather name="mail" size={24} color="black" style={styles.icon} />
-                    <TextInput
-                        placeholder="Adresse mail"
-                        style={styles.input}
-                    />
-                </View>
+            <View style={styles.ConnexionContainer}>
+                <Feather name="home" size={24} color="black" style={styles.icon} />
+                <TextInput
+                    placeholder="Adresse postale"
+                    style={styles.input}
+                />
+            </View>
 
-                <View style={styles.ConnexionContainer}>
-                    <Feather name="lock" size={24} color="black" style={styles.icon} />
-                    <TextInput
-                        placeholder="Mot de passe"
-                        secureTextEntry={!showPassword1}
-                        style={styles.passwordInput}
-                    />
-                    <TouchableOpacity onPress={toggleShowPassword1} style={styles.showPasswordButton}>
-                        <Feather name={showPassword1 ? 'eye-off' : 'eye'} size={24} color="black" />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.ConnexionContainer}>
-                    <Feather name="lock" size={24} color="black" style={styles.icon} />
-                    <TextInput
-                        placeholder="Confirmation mot de passe"
-                        secureTextEntry={!showPassword2}
-                        style={styles.passwordInput}
-                    />
-                    <TouchableOpacity onPress={toggleShowPassword2} style={styles.showPasswordButton}>
-                        <Feather name={showPassword2 ? 'eye-off' : 'eye'} size={24} color="black" />
-                    </TouchableOpacity>
-                </View>
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>S'inscrire</Text>
+            <View style={styles.ConnexionContainer}>
+                <Feather name="mail" size={24} color="black" style={styles.icon} />
+                <TextInput
+                    placeholder="Adresse mail"
+                    style={styles.input}
+                />
+            </View>
+
+            <View style={styles.ConnexionContainer}>
+                <Feather name="lock" size={24} color="black" style={styles.icon} />
+                <TextInput
+                    placeholder="Mot de passe"
+                    secureTextEntry={!showPassword1}
+                    style={styles.passwordInput}
+                />
+                <TouchableOpacity onPress={toggleShowPassword1} style={styles.showPasswordButton}>
+                    <Feather name={showPassword1 ? 'eye-off' : 'eye'} size={24} color="black" />
                 </TouchableOpacity>
-            </KeyboardAvoidingView>
-        );
-    }
-};
+            </View>
+            <View style={styles.ConnexionContainer}>
+                <Feather name="lock" size={24} color="black" style={styles.icon} />
+                <TextInput
+                    placeholder="Confirmation mot de passe"
+                    secureTextEntry={!showPassword2}
+                    style={styles.passwordInput}
+                />
+                <TouchableOpacity onPress={toggleShowPassword2} style={styles.showPasswordButton}>
+                    <Feather name={showPassword2 ? 'eye-off' : 'eye'} size={24} color="black" />
+                </TouchableOpacity>
+            </View>
+            <TouchableOpacity style={styles.button} onPress={logout}>
+                <Text style={styles.buttonText}>S'inscrire</Text>
+            </TouchableOpacity>
+            <ConfirmationInscription
+                visible={showConfirmationInscr}
+                onContinue={handleLogin}
+            />
+        </KeyboardAvoidingView>
+    );
+}
 
 const styles = StyleSheet.create({
     center: {
         alignItems: 'center',
     },
     titreDelivecrous: {
-        fontFamily: 'Montserrat_700Bold',
+        fontWeight:'900',
         fontSize: 15,
     },
     container: {
@@ -116,7 +124,7 @@ const styles = StyleSheet.create({
         height: 50,
     },
     appName: {
-        fontFamily:'Montserrat_600SemiBold',
+        fontWeight:'bold',
         fontSize: 24,
         marginTop: 20,
     },

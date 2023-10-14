@@ -1,22 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import {View, Image, Text, Button, TouchableOpacity} from 'react-native';
+import { View, Image, Text, Button, TouchableOpacity } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import PageAccueil from './pages/PageAccueil';
 import PageCreationCompte from './pages/PageCreationCompte';
 import Home from './pages/Home';
 import logo from './assets/logo.png';
 import DataDetails from './pages/DataDetails';
-import {Feather} from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import Panier from './pages/Panier';
-
-
-
-
+import Menu from './pages/Menu';
+import PageConfirmation from './pages/PageConfirmation';
 
 const Stack = createStackNavigator();
 
 const App = () => {
+    const [isconnected, setIsConnected] = useState(false)
+
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Home">
@@ -36,21 +36,42 @@ const App = () => {
                         headerRight: () => (
                             <TouchableOpacity
                                 style={{ marginRight: 15 }}
-                                onPress={() => navigation.navigate('PageAccueil')}
+                                onPress={() => { isconnected ? (navigation.navigate('Menu')) : (navigation.navigate("PageAccueil")) }}
                             >
                                 <Feather name="user" size={24} color="black" />
                             </TouchableOpacity>
                         )
                     })}
                 />
-                <Stack.Screen name="Panier" options={{headerTitle:'Mon Panier'}} component={Panier} />
-                <Stack.Screen name="DataDetails" options={{headerTitle:''}} component={DataDetails} />
-                <Stack.Screen name="PageAccueil" options={{ headerShown: false, headerTitle: "Se connecter" }} component={PageAccueil} />
-                <Stack.Screen name="PageCreationCompte" options={{ headerTitle: "S'inscrire" }} component={PageCreationCompte} />
+                <Stack.Screen
+                    name="Menu"
+                    options={{
+                        headerTitle: '',
+                        headerStyle: {
+                            backgroundColor: '#F5F5F5',
+
+                        },
+                    }}
+                >
+                    {props => <Menu {...props} isconnected={isconnected} setIsConnected={setIsConnected} />}
+                </Stack.Screen>
+
+
+                <Stack.Screen name="Panier" options={{headerTitle: '',headerStyle: {backgroundColor: '#F5F5F5'},}} >
+                {props => <Panier {...props} isconnected={isconnected}/>}
+                </Stack.Screen>
+                <Stack.Screen name="DataDetails" options={{headerTitle: '',headerStyle: {backgroundColor: '#F5F5F5',}}} component={DataDetails} />
+                <Stack.Screen name="PageAccueil" options={{headerTitle: '',headerStyle: {backgroundColor: '#F5F5F5'},}} >
+                    {props => <PageAccueil {...props} isconnected={isconnected} setIsConnected={setIsConnected} />}
+                </Stack.Screen>
+                <Stack.Screen name="PageCreationCompte" options={{headerTitle: '',headerStyle: {backgroundColor: '#F5F5F5'},}}>
+                    {props => <PageCreationCompte {...props} isconnected={isconnected} setIsConnected={setIsConnected} />}
+                </Stack.Screen>
+                <Stack.Screen name = "PageConfirmation" options={{headerShown:""}} component={PageConfirmation}>
+                </Stack.Screen>
             </Stack.Navigator>
         </NavigationContainer>
     );
 };
-
 
 export default App;
