@@ -5,6 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { TextInput } from 'react-native';
 import categories from '../assets/data/categories';
+import { Platform } from 'react-native';
+
+
 
 
 
@@ -19,7 +22,7 @@ export default function Home() {
   const renderCategoriesItem = ({ item }) => {
     // Trouver la quantité de l'article dans le panier
     const itemQuantity = cartItems.filter((cartItem) => cartItem.id === item.id).length;
-  
+
     return (
       <View style={styles.categoryCard}>
         <Image source={item.image} style={styles.categoryImage} />
@@ -41,14 +44,14 @@ export default function Home() {
             </TouchableOpacity>
             <Text style={styles.quantityText}>{itemQuantity}</Text>
             <TouchableOpacity
-            style={styles.adddelstyleButton}
-            onPress={() => {
-              // Ajoutez un article au panier
-              addToCart(item);
-            }}
-          >
-            <Text style={styles.ButtonText}>+</Text>
-          </TouchableOpacity>
+              style={styles.adddelstyleButton}
+              onPress={() => {
+                // Ajoutez un article au panier
+                addToCart(item);
+              }}
+            >
+              <Text style={styles.ButtonText}>+</Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <TouchableOpacity
@@ -64,13 +67,13 @@ export default function Home() {
       </View>
     );
   };
-  
+
 
   const navigation = useNavigation();
 
   const handleCategoryPress = (item) => {
     /*navigation.navigate('DataDetails', { item });*/
-    navigation.push('DataDetails', { item, cartItems, setCartItems})
+    navigation.push('DataDetails', { item, cartItems, setCartItems })
   };
 
   const handleCategoryToggle = (category) => {
@@ -96,15 +99,15 @@ export default function Home() {
 
   const removeFromCart = (itemToRemove) => {
     const itemIndex = cartItems.findIndex((item) => item.id === itemToRemove.id);
-  
+
     if (itemIndex !== -1) {
       const updatedCart = [...cartItems];
       updatedCart.splice(itemIndex, 1); // Retirez un élément à l'index trouvé
       setCartItems(updatedCart);
     }
   };
-  
-  
+
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -141,8 +144,8 @@ export default function Home() {
         </ScrollView>
 
         {/* Popular */}
+        <Text style={styles.categoriestext}>La carte</Text>
         <View style={styles.popularWrapper}>
-          <Text style={styles.categoriestext}>La carte</Text>
           {filteredDataBySearch.map(item => (
             <View key={item.id} style={styles.popularCardWrapper}>
               {renderCategoriesItem({ item })}
@@ -187,17 +190,29 @@ const styles = StyleSheet.create({
   },
   popularWrapper: {
     paddingHorizontal: 20,
+    ...(Platform.OS === 'web'
+      ? {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+      }
+      : {}),
   },
+
   popularCardWrapper: {
     backgroundColor: '#FFF',
     borderRadius: 10,
     marginBottom: 20,
-    elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
-    position: 'relative', // Pour permettre un positionnement absolu des éléments enfants
+    position: 'relative',
+    ...(Platform.OS === 'web'
+      ? {
+        width: 'calc(33.33% - 14px)', // 33.33% pour 3 cartes par ligne et 14px pour l'espacement entre les cartes
+        margin: '7px',
+      }
+      : {}),
   },
   categoryCard: {
     paddingTop: 10,
@@ -205,6 +220,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row', // Pour afficher les éléments côte à côte
     justifyContent: 'space-between', // Pour les espacer
+
   },
   categoryImage: {
     width: 100,
@@ -261,17 +277,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  adddelstyleButton:{
+  adddelstyleButton: {
     backgroundColor: '#FFC700',
     width: 30,
     height: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius : 100
+    borderRadius: 100
 
   },
-  quantityText:{
-    padding:8
+  quantityText: {
+    padding: 8
   },
   cartButton: {
     position: 'absolute',
@@ -317,7 +333,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#E0E0E0",
-    alignItems: 'center'
+    alignItems: 'center',
+    ...(Platform.OS === 'web'
+      ? {
+        width: 220,
+      }
+      : {}),
   },
   selectedCategoryButton: {
     backgroundColor: "#FFC700",

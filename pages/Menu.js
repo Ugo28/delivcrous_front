@@ -44,17 +44,14 @@ const Menu = ({ isconnected, setIsConnected }) => {
 
       <View style={styles.positionlogo}>
         <Image source={logo} style={styles.taillelogo}/>
+        <Text style={styles.accueilText}>Bonjour Ugo Oglialoro</Text>
       </View>
       <TouchableOpacity style={styles.menuItem} onPress={goToProfile}>
-        <Text>Mon Profil</Text>
+        <Text style={styles.menuItemText}>Mon Profil</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.menuItem} onPress={goToOrders}>
-        <Text>Mes Commandes</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.menuItem} onPress={goToCart}>
-        <Text>Mon Panier</Text>
+        <Text style={styles.menuItemText}>Mes Commandes</Text>
       </TouchableOpacity>
 
       <View style={styles.logoutButtonContainer}>
@@ -112,6 +109,14 @@ const styles = StyleSheet.create({
     paddingLeft:10,
     fontWeight:'bold'
   },
+  accueilText:{
+    fontSize:30,
+    paddingTop:10,
+    paddingBottom:10
+  },
+  menuItemText: {
+    fontSize: 17,
+  }
 });
 
 export default Menu;

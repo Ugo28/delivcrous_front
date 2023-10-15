@@ -9,7 +9,7 @@ const categoriesdata = [
         id: 1,
         image: bolognaise,
         title: "Pâtes bolognaise",
-        description: "Délicieuse pâtes avec sa viande tendre et sa sauce onctueuse.",
+        description: "Délicieuse pâtes avec sa viande tendre.",
         prix: 14,
         category: 'Pâtes',
         allergenes: ['gluten', 'lactose', 'céleri', 'œufs']
@@ -27,7 +27,7 @@ const categoriesdata = [
         id: 3,
         image: pizza,
         title: "Margherita",
-        description: "Incroyable pizza avec sa mozzarella moelleuse et sa sauce tomate onctueuse.",
+        description: "Incroyable pizza avec sa mozzarella moelleuse.",
         prix: 12,
         category: 'Pizza',
         allergenes: ['gluten', 'lactose', 'noix', 'soja']
@@ -45,7 +45,7 @@ const categoriesdata = [
         id: 5,
         image: burger,
         title: "Burger",
-        description: "Excellent pain de boulanger avec son steak haché angus.",
+        description: "Excellent pain avec son steak haché angus.",
         prix: 12,
         category: 'Burger',
         allergenes: ['gluten', 'lactose', 'moutarde', 'céleri']

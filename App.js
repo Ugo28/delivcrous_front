@@ -55,8 +55,6 @@ const App = () => {
                 >
                     {props => <Menu {...props} isconnected={isconnected} setIsConnected={setIsConnected} />}
                 </Stack.Screen>
-
-
                 <Stack.Screen name="Panier" options={{headerTitle: '',headerStyle: {backgroundColor: '#F5F5F5'},}} >
                 {props => <Panier {...props} isconnected={isconnected}/>}
                 </Stack.Screen>

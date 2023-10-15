@@ -33,14 +33,14 @@ export default function DataDetails({ route }) {
             updatedCart.push({ item, count: 1 });
         }
         setCart(updatedCart);
-    
+
         const updatedItems = updatedCart.reduce((acc, group) => {
             acc.push(...Array(group.count).fill(group.item));
             return acc;
         }, []);
         route.params.setCartItems(updatedItems);
     };
-    
+
 
     const decrementCount = (item) => {
         const updatedCart = [...cart];
@@ -79,20 +79,23 @@ export default function DataDetails({ route }) {
                 <Text style={styles.priceDetails}>{item.prix}€</Text>
             </View>
             {itemQuantity > 0 ? (
-                <View style={styles.adddelButton}>
-                    <TouchableOpacity
-                        style={styles.adddelstyleButton}
-                        onPress={() => decrementCount(item)}
-                    >
-                        <Text style={styles.ButtonText}>-</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.quantityText}>{itemQuantity}</Text>
-                    <TouchableOpacity
-                        style={styles.adddelstyleButton}
-                        onPress={() => incrementCount(item)}
-                    >
-                        <Text style={styles.ButtonText}>+</Text>
-                    </TouchableOpacity>
+                <View style={styles.addOrder}>
+                    <Text style={styles.addOrderText}>Article ajouté au panier !</Text>
+                    <View style={styles.adddelButton}>
+                        <TouchableOpacity
+                            style={styles.adddelstyleButton}
+                            onPress={() => decrementCount(item)}
+                        >
+                            <Text style={styles.ButtonText}>-</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.quantityText}>{itemQuantity}</Text>
+                        <TouchableOpacity
+                            style={styles.adddelstyleButton}
+                            onPress={() => incrementCount(item)}
+                        >
+                            <Text style={styles.ButtonText}>+</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             ) : (
                 <TouchableOpacity style={styles.button} onPress={() => incrementCount(item)}>
@@ -152,14 +155,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     adddelButton: {
-        position: 'absolute',
-        bottom: 0,
-        right: 2,
         width: 85,
         height: 40,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
+        paddingLeft: 30,
+
     },
     adddelstyleButton: {
         backgroundColor: '#FFC700',
@@ -167,15 +169,25 @@ const styles = StyleSheet.create({
         height: 30,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 100
+        borderRadius: 100,
 
     },
     ButtonText: {
         fontSize: 20,
         fontWeight: 'bold',
         color: 'black',
+        textAlign:'center'
     },
     quantityText: {
         padding: 8
     },
+    addOrder:{
+        flexDirection:'row',
+        alignItems:'center',
+        paddingTop:20,
+        justifyContent: 'center',
+    },
+    addOrderText: {
+        fontSize: 30,
+    }
 })
