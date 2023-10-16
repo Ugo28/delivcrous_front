@@ -82,7 +82,7 @@ export default function Panier({ route, isconnected }) {
           keyExtractor={(group) => group.item.id.toString()}
           renderItem={({ item }) => (
             <View style={styles.cartItem}>
-              <Image source={item.item.image} style={styles.itemImage} />
+              <Image source={{ uri: item.item.image }} style={styles.itemImage} />
               <Text style={styles.itemName}>{item.item.title}</Text>
               <View style={styles.counterContainer}>
                 <Text style={styles.itemprice}>{item.item.prix}€</Text>

@@ -18,7 +18,7 @@ export default function DataDetails({ route }) {
             }
             return acc;
         }, []);
-
+        
         setCart(groupedCart);
     }, [cartItems]);
 
@@ -29,7 +29,6 @@ export default function DataDetails({ route }) {
         if (itemIndex !== -1) {
             updatedCart[itemIndex].count += 1;
         } else {
-            // Si l'élément n'est pas trouvé, ajoutez-le au panier avec une quantité de 1.
             updatedCart.push({ item, count: 1 });
         }
         setCart(updatedCart);
@@ -63,18 +62,13 @@ export default function DataDetails({ route }) {
         <View>
             <View style={styles.center}>
                 <Text style={styles.detailsTitre}>{item.title}</Text>
-                <Image source={item.image} style={styles.detailsImage} />
+                <Image source={{ uri: item.image }} style={styles.detailsImage} />
                 <Text style={styles.detailsDescr}>{item.description}</Text>
             </View>
             <View style={styles.price}>
                 <Text style={styles.titleAllergene}>Allergènes :</Text>
                 <View style={styles.listeAllergene}>
-                    {item.allergenes.map((allergene, index) => (
-                        <Text key={index}>
-                            {allergene}
-                            {index === item.allergenes.length - 1 ? '.' : ', '}
-                        </Text>
-                    ))}
+                    <Text>{item.allergenes}</Text>
                 </View>
                 <Text style={styles.priceDetails}>{item.prix}€</Text>
             </View>

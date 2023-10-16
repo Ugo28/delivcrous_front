@@ -1,17 +1,28 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Feather } from '@expo/vector-icons'; // Import de l'icône Feather
+import { Feather } from '@expo/vector-icons';
 import logo from '../assets/logo.png';
+import axios from 'axios';
 
 const PageAccueil = ({ isconnected, setIsConnected }) => {
   const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(false); // État pour afficher ou masquer le mot de passe
+  const [username, setusername] = useState('');
+  const [password, setPassword] = useState(''); 
 
-  const handleLogin = () => {
-    setIsConnected(true);
-    navigation.navigate('Carte');
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('http://192.168.166.215:8080/utilisateurs/login', { username, password });
+      console.log(response.data);
+      setIsConnected(true);
+      navigation.navigate('Carte');
+    } catch (error) {
+      console.error('Erreur d\'authentification :', error);
+    }
   };
+
+
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -36,6 +47,8 @@ const PageAccueil = ({ isconnected, setIsConnected }) => {
         <TextInput
           placeholder="Adresse mail"
           style={styles.input}
+          value={username}
+          onChangeText={text => setusername(text)}
         />
       </View>
 
@@ -45,6 +58,8 @@ const PageAccueil = ({ isconnected, setIsConnected }) => {
           placeholder="Mot de passe"
           secureTextEntry={!showPassword}
           style={styles.passwordInput}
+          value={password}
+          onChangeText={text => setPassword(text)}
         />
         <TouchableOpacity onPress={toggleShowPassword} style={styles.showPasswordButton}>
           <Feather name={showPassword ? 'eye-off' : 'eye'} size={24} color="black" />

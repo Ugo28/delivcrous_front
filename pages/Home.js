@@ -1,22 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import categoriesdata from '../assets/data/categoriesdata';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { TextInput } from 'react-native';
 import categories from '../assets/data/categories';
 import { Platform } from 'react-native';
-
-
-
+import axios from 'axios';
 
 
 export default function Home() {
 
+  // Remplacez l'URL par l'URL de votre backend
+  const backendUrlPlat = 'http://192.168.166.215:8080/plats/getplats';
+  const [categoriesdata, setCategoriesdata] = useState([]);
+
+  useEffect(() => {
+    axios.get(backendUrlPlat)
+      .then((response) => {
+        const data = response.data;
+        data.forEach((item) => {
+          console.log(`image : ${item.image}`);
+        });
+        setCategoriesdata(data);
+      })
+      .catch((error) => {
+        console.error('Erreur lors de la récupération des plats:', error);
+      });
+  }, []);
+
   const [cartItems, setCartItems] = useState([]);
-
   const [searchText, setSearchText] = useState('');
-
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const renderCategoriesItem = ({ item }) => {
@@ -25,11 +38,12 @@ export default function Home() {
 
     return (
       <View style={styles.categoryCard}>
-        <Image source={item.image} style={styles.categoryImage} />
+        <Image source={{ uri: item.image }} style={styles.categoryImage} />
         <TouchableOpacity style={styles.categoryInfo} onPress={() => handleCategoryPress(item)}>
           <Text style={styles.categoryTitle}>{item.title}</Text>
           <Text style={styles.categoryDescr}>{item.description}</Text>
           <Text style={styles.categoriePrice}>{item.prix}€</Text>
+
         </TouchableOpacity>
         {itemQuantity > 0 ? (
           <View style={styles.adddelButton}>
@@ -67,7 +81,6 @@ export default function Home() {
       </View>
     );
   };
-
 
   const navigation = useNavigation();
 
