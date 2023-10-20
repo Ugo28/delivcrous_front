@@ -1,29 +1,42 @@
 # Delivecrous Front
 
-Architecture du Projet
+## Architecture du Projet
+
 L'application Delivecrous est développée en utilisant React Native, une bibliothèque JavaScript pour créer des applications mobiles multiplateformes. Voici l'architecture clé du projet :
 
-src : Le répertoire source principal contenant tous les fichiers source de l'application.
-assets : Les fichiers statiques, tels que les images et les polices.
-components : Les composants réutilisables de l'application.
-pages : Les écrans de l'application, chacun dans son propre fichier.
-navigation : La configuration de la navigation entre les écrans.
-App.js : Le point d'entrée de l'application.
-node_modules : Les dépendances du projet.
-App.js : Le composant racine de l'application.
+- **src** : Le répertoire source principal contenant tous les fichiers source de l'application.
+- **assets** : Les fichiers statiques, tels que les images et les polices.
+- **components** : Les composants réutilisables de l'application.
+- **pages** : Les écrans de l'application, chacun dans son propre fichier.
+- **navigation** : La configuration de la navigation entre les écrans.
+- **App.js** : Le point d'entrée de l'application.
+- **node_modules** : Les dépendances du projet.
+- **App.js** : Le composant racine de l'application.
 
-Configuration
-L'application utilise un fichier de configuration nommé config.json pour personnaliser les paramètres. Assurez-vous de configurer le fichier config.json pour spécifier l'adresse IPv4 de votre serveur ou de votre machine. Voici un exemple de contenu pour config.json :
+## Configuration
+
+L'application utilise un fichier de configuration nommé `config.json` pour personnaliser les paramètres. Assurez-vous de configurer le fichier `config.json` pour spécifier l'adresse IPv4 de votre serveur ou de votre machine. Voici un exemple de contenu pour `config.json` :
+```json
 {
   "IPv4": "192.168.0.100" // Remplacez par l'adresse IP de votre machine ou de votre serveur
 }
 
-Exécution
-Après avoir configuré le fichier config.json, vous pouvez lancer l'application en utilisant la commande suivante :
+
+
+
+## Exécution
+
+Après avoir configuré le fichier `config.json`, vous pouvez lancer l'application en utilisant la commande suivante :
+
+```shell
 npm start
+
 Assurez-vous d'avoir installé l'application Expo Go sur votre téléphone. Après avoir scanné le QR code généré par votre IDE, vous aurez accès à l'application et pourrez commencer à l'utiliser.
 
 Assurez-vous également d'avoir installé toutes les dépendances requises en utilisant npm install avant de lancer l'application.
+
+```shell
+npm install
 
 Voici un court résumé de chaque élément du projet :
 
