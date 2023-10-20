@@ -1,5 +1,6 @@
+import { Feather } from '@expo/vector-icons';
 import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 
 const AddRemoveButtons = ({ itemQuantity, removeFromCart, addToCart }) => {
   return (
@@ -10,7 +11,7 @@ const AddRemoveButtons = ({ itemQuantity, removeFromCart, addToCart }) => {
           removeFromCart();
         }}
       >
-        <Text style={styles.ButtonText}>-</Text>
+        <Feather name='minus' size={15}/>
       </TouchableOpacity>
       <Text style={styles.quantityText}>{itemQuantity}</Text>
       <TouchableOpacity
@@ -19,7 +20,7 @@ const AddRemoveButtons = ({ itemQuantity, removeFromCart, addToCart }) => {
           addToCart();
         }}
       >
-        <Text style={styles.ButtonText}>+</Text>
+        <Feather name='plus' size={15}/>
       </TouchableOpacity>
     </View>
   );

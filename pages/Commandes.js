@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Platform } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Platform } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -7,32 +7,46 @@ const CommandesPage = () => {
     const [commandes, setCommandes] = useState([]);
 
     useEffect(() => {
-        const getUserInfo = async () => {
-            const userToken = await AsyncStorage.getItem('jwtToken');
-            const userId = await AsyncStorage.getItem('userId');
-
-            axios.get(`http://192.168.1.187:8080/api/commandes/getcommande?user_id=${userId}`, {
-                headers: {
-                    Cookie: `delivcrous=${userToken}`,
-                },
-            })
-                .then((response) => {
-                    setCommandes(response.data);
-                })
-                .catch((error) => {
-                    console.error("Erreur lors de la récupération des commandes :", error);
+        const fetchCommandes = async () => {
+            try {
+                const userToken = await AsyncStorage.getItem('jwtToken');
+                const userId = await AsyncStorage.getItem('userId');
+                const response = await axios.get(`http://192.168.1.187:8080/api/commandes/getcommande?user_id=${userId}`, {
+                    headers: {
+                        Cookie: `delivcrous=${userToken}`,
+                    },
                 });
+                setCommandes(response.data);
+            } catch (error) {
+                console.error("Erreur lors de la récupération des commandes :", error);
+            }
         };
 
-        getUserInfo();
+        fetchCommandes();
     }, []);
+
+    const calculateTotalPrice = (plats) => {
+        return plats.reduce((total, plat) => total + plat.prix, 0);
+    };
 
     const renderItem = ({ item }) => (
         <View style={styles.commandeContainer}>
-            <Text style={styles.commandeTitle}>Numéro de commande : {item.commande_id}</Text>
+            <Text style={styles.commandeTitle}>Commande #{item.commande_id}</Text>
             <Text style={styles.commandeText}>Adresse de livraison : {item.adresse_livraison}</Text>
             <Text style={styles.commandeText}>Statut : {item.status}</Text>
             <Text style={styles.commandeText}>Date de commande : {item.date_commande}</Text>
+            <Text style={styles.commandeText}>Détails de la commande: </Text>
+            {item.plats.length > 0 && (
+                <View style={styles.platsContainer}>
+                    {item.plats.map((plat) => (
+                        <View key={plat.id} style={styles.platContainer}>
+                            <Text style={styles.platTitle}>{plat.title}</Text>
+                            <Text style={styles.platPrice}>{plat.prix}€</Text>
+                        </View>
+                    ))}
+                </View>
+            )}
+            <Text style={styles.totalPrice}>Total : {calculateTotalPrice(item.plats)}€</Text>
         </View>
     );
 
@@ -52,26 +66,56 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
+        backgroundColor: '#F5F5F5',
     },
     title: {
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: 20,
         textAlign: 'center',
     },
     commandeContainer: {
-        backgroundColor: '#f2f2f2',
+        backgroundColor: '#fff',
         padding: 20,
         marginVertical: 10,
         borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 3,
     },
     commandeTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 5,
+        marginBottom: 10,
     },
     commandeText: {
         fontSize: 16,
+        marginBottom: 5,
+        fontWeight:'500'
+    },
+    platsContainer: {
+        marginTop: 5,
+    },
+    platContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 5,
+    },
+    platTitle: {
+        fontSize: 16,
+        color: '#333',
+    },
+    platPrice: {
+        fontSize: 16,
+        color: '#333',
+    },
+    totalPrice: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginTop: 10,
+        color: '#333',
     },
 });
 

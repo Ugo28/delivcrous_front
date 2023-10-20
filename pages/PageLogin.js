@@ -29,8 +29,7 @@ const PageLogin = ({ isconnected, setIsConnected }) => {
       const response = await axios.post('http://192.168.1.187:8080/api/utilisateurs/login', { username, password });
 
       const userData = response.data.body;
-      const UserEmail = userData.email;
-      const UserName = userData.username;
+      console.log(userData);
       const UserId = userData.id;
       await AsyncStorage.setItem('userEmail', userData.email);
       await AsyncStorage.setItem('username', userData.username);

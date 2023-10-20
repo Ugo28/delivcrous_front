@@ -8,6 +8,7 @@ const PageConfirmation = () => {
   const route = useRoute();
   const { cart, totalAmount } = route.params;
 
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.iconContainer}>
@@ -118,9 +119,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginVertical: 10,
     color: '#000',
+    right:0
   },
   button: {
-    backgroundColor: '#FFC700', // Fond jaune
+    backgroundColor: '#FFC700', 
     borderRadius: 25,
     paddingVertical: 15,
     paddingHorizontal: 30,

@@ -1,8 +1,9 @@
 import { Feather } from '@expo/vector-icons';
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, TextInputBase } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Panier({ route, isconnected }) {
   const { cartItems } = route.params;
@@ -60,9 +61,58 @@ export default function Panier({ route, isconnected }) {
 
   const totalAmount = cart.reduce((total, itemGroup) => total + itemGroup.count * itemGroup.item.prix, 0);
 
+  const createOrder = async () => {
+    const address = "123 rue de la livraison"; // Remplacez par l'adresse de livraison de l'utilisateur
+    const status = "en cours"; // Statut de la commande
+    const orderDate = new Date().toISOString();
+    const dishes = [];
+
+    // Parcourez le panier pour ajouter chaque article en fonction de sa quantité
+    cart.forEach((itemGroup) => {
+      for (let i = 0; i < itemGroup.count; i++) {
+        dishes.push({ id: itemGroup.item.id });
+      }
+    });
+
+    try {
+      const userToken = await AsyncStorage.getItem('jwtToken');
+      const userId = await AsyncStorage.getItem('userId');
+
+      // Envoyez la requête POST au backend
+      const response = await axios.post(
+        `http://192.168.1.187:8080/api/commandes/createcommande?user_id=${userId}`,
+        {
+          adresse_livraison: address,
+          status: status,
+          date_commande: orderDate,
+          plats: dishes,
+        },
+        {
+          headers: {
+            Cookie: `delivcrous=${userToken}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      // Gérez la réponse du backend, par exemple, affichez une confirmation à l'utilisateur
+      console.log('Commande créée avec succès', response.data);
+    
+      route.params.setCartItems([])
+      // Vous pouvez également réinitialiser le panier ici si nécessaire
+      navigation.navigate('PageConfirmation', { cart, totalAmount })
+
+    } catch (error) {
+      console.error("Erreur lors de la création de la commande :", error);
+      // Gérez les erreurs ici et affichez un message d'erreur à l'utilisateur si nécessaire
+    }
+  };
+
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Votre Panier</Text>
+      <Text style={styles.textSolde}>Mon solde : 60€</Text>
       {cart.length === 0 ? (
         <Text style={styles.emptyCartText}>Votre panier est vide.</Text>
       ) : (
@@ -105,7 +155,7 @@ export default function Panier({ route, isconnected }) {
           style={styles.validateButton}
           onPress={() =>
             isconnected
-              ? navigation.navigate('PageConfirmation', { cart, totalAmount })
+              ? createOrder()
               : navigation.navigate('PageLogin')
           }
         >
@@ -135,6 +185,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
+  },
+  textSolde: {
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'left',
+    paddingBottom: 10
+
   },
   emptyCartText: {
     fontSize: 16,
