@@ -12,16 +12,12 @@ const Menu = ({ isconnected, setIsConnected }) => {
 
   const goToProfile = () => {
     // Naviguer vers la page de profil
-    navigation.navigate('Profile');
+    navigation.navigate('MonCompte');
   };
 
   const goToOrders = () => {
     // Naviguer vers la page des commandes
     navigation.navigate('Orders');
-  };
-
-  const goToCart = () => {
-    // Naviguer vers la page du panier
   };
 
   const logout = () => {

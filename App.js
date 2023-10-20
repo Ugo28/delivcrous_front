@@ -11,6 +11,7 @@ import { Feather } from "@expo/vector-icons";
 import Panier from './pages/Panier';
 import Menu from './pages/Menu';
 import PageConfirmation from './pages/PageConfirmation';
+import MonCompte from './pages/DetailsCompte'; 
 
 const Stack = createStackNavigator();
 
@@ -67,6 +68,7 @@ const App = () => {
                 </Stack.Screen>
                 <Stack.Screen name = "PageConfirmation" options={{headerShown:""}} component={PageConfirmation}>
                 </Stack.Screen>
+                <Stack.Screen name="MonCompte" options={{headerTitle: '',headerStyle: {backgroundColor: '#F5F5F5',}}} component={MonCompte} />
             </Stack.Navigator>
         </NavigationContainer>
     );

@@ -12,24 +12,19 @@ const PageCreationCompte = ({ isconnected, setIsConnected }) => {
     const navigation = useNavigation();
 
     const [showConfirmationInscr, setshowConfirmationInscr] = useState(false);
-  const [showPassword1, setShowPassword1] = useState(false);
-  const [showPassword2, setShowPassword2] = useState(false);
-  const [username, setusername] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [address, setAddress] = useState('');
-  const [email, setEmail] = useState('');
-  const [password1, setPassword1] = useState('');
-  const [password2, setPassword2] = useState('');
-
-    const logout = () => {
-        setshowConfirmationInscr(true);
-    };
+    const [showPassword1, setShowPassword1] = useState(false);
+    const [showPassword2, setShowPassword2] = useState(false);
+    const [username, setusername] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [address, setAddress] = useState('');
+    const [email, setEmail] = useState('');
+    const [password1, setPassword1] = useState('');
+    const [password2, setPassword2] = useState('');
 
     const handleLogin = () => {
         setIsConnected(true);
         navigation.navigate('Carte');
     };
-
 
     const toggleShowPassword1 = () => {
         setShowPassword1(!showPassword1);

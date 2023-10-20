@@ -2,11 +2,11 @@ import { Feather } from '@expo/vector-icons';
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 export default function Panier({ route, isconnected }) {
   const { cartItems } = route.params;
   const [cart, setCart] = useState([]);
-
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -25,6 +25,30 @@ export default function Panier({ route, isconnected }) {
 
   const removeFromCart = (item) => {
     const updatedCart = cart.filter((group) => group.item.id !== item.item.id);
+    updateCartAndRoute(updatedCart);
+  };
+
+  const incrementCount = (item) => {
+    const updatedCart = [...cart];
+    const itemIndex = updatedCart.findIndex((group) => group.item.id === item.item.id);
+    if (itemIndex !== -1) {
+      updatedCart[itemIndex].count += 1;
+    }
+    updateCartAndRoute(updatedCart);
+  };
+
+  const decrementCount = (item) => {
+    const updatedCart = [...cart];
+    const itemIndex = updatedCart.findIndex((group) => group.item.id === item.item.id);
+    if (itemIndex !== -1 && updatedCart[itemIndex].count > 1) {
+      updatedCart[itemIndex].count -= 1;
+    } else if (itemIndex !== -1) {
+      updatedCart.splice(itemIndex, 1);
+    }
+    updateCartAndRoute(updatedCart);
+  };
+
+  const updateCartAndRoute = (updatedCart) => {
     setCart(updatedCart);
 
     const updatedItems = updatedCart.reduce((acc, group) => {
@@ -34,42 +58,7 @@ export default function Panier({ route, isconnected }) {
     route.params.setCartItems(updatedItems);
   };
 
-  const incrementCount = (item) => {
-    const updatedCart = [...cart];
-    const itemIndex = updatedCart.findIndex((group) => group.item.id === item.item.id);
-    if (itemIndex !== -1) {
-      updatedCart[itemIndex].count += 1;
-      setCart(updatedCart);
-    }
-
-    const updatedItems = updatedCart.reduce((acc, group) => {
-      acc.push(...Array(group.count).fill(group.item));
-      return acc;
-    }, []);
-    route.params.setCartItems(updatedItems);
-  };
-
-  const decrementCount = (item) => {
-    const updatedCart = [...cart];
-    const itemIndex = updatedCart.findIndex((group) => group.item.id === item.item.id);
-    if (itemIndex !== -1 && updatedCart[itemIndex].count > 1) {
-      updatedCart[itemIndex].count -= 1;
-      setCart(updatedCart);
-    } else if (itemIndex !== -1) {
-      updatedCart.splice(itemIndex, 1);
-    }
-
-    const updatedItems = updatedCart.reduce((acc, group) => {
-      acc.push(...Array(group.count).fill(group.item));
-      return acc;
-    }, []);
-    route.params.setCartItems(updatedItems);
-  };
-
-  // Calculer le prix total du panier
-  const totalAmount = cart.reduce((total, itemGroup) => {
-    return total + itemGroup.count * itemGroup.item.prix;
-  }, 0);
+  const totalAmount = cart.reduce((total, itemGroup) => total + itemGroup.count * itemGroup.item.prix, 0);
 
   return (
     <View style={styles.container}>
@@ -111,22 +100,16 @@ export default function Panier({ route, isconnected }) {
         />
       )}
 
-      {cart.length > 0 && (isconnected ? (
+      {cart.length > 0 && (
         <TouchableOpacity
           style={styles.validateButton}
-          onPress={() => navigation.navigate('PageConfirmation')}
+          onPress={() => isconnected ? navigation.navigate('PageConfirmation') : navigation.navigate('PageAccueil')}
         >
-          <Text style={styles.validateButtonText}>Valider le panier : {totalAmount}€</Text>
+          <Text style={styles.validateButtonText}>
+            {isconnected ? 'Valider le panier' : 'Me connecter et valider le panier'} : {totalAmount}€
+          </Text>
         </TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-          style={styles.validateButton}
-          onPress={() => navigation.navigate('PageAccueil')} // Naviguer vers la page de connexion
-        >
-          <Text style={styles.validateButtonText}>Me connecter et valider le panier : {totalAmount}€</Text>
-        </TouchableOpacity>
-      ))}
-
+      )}
     </View>
   );
 }
@@ -143,7 +126,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   emptyCartText: {
     fontSize: 16,
@@ -187,9 +170,7 @@ const styles = StyleSheet.create({
   },
   decrementButton: {
     paddingLeft: 10,
-
   },
-
   validateButton: {
     backgroundColor: '#FFC700',
     borderRadius: 20,

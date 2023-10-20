@@ -2,20 +2,48 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
-import logo from '../assets/logo.png';
 import axios from 'axios';
+import logo from '../assets/logo.png';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Importez AsyncStorage
+
 
 const PageAccueil = ({ isconnected, setIsConnected }) => {
   const navigation = useNavigation();
-  const [showPassword, setShowPassword] = useState(false); // État pour afficher ou masquer le mot de passe
+  const [showPassword, setShowPassword] = useState(false);
   const [username, setusername] = useState('');
-  const [password, setPassword] = useState(''); 
+  const [password, setPassword] = useState('');
+  const [userEmail, setUserEmail] = useState('');
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://192.168.166.215:8080/utilisateurs/login', { username, password });
-      console.log(response.data);
+      // Effectuez la demande de connexion
+      const response = await axios.post('http://192.168.1.187:8080/api/utilisateurs/login', { username, password });
+      const userData=response.data.body
+      console.log(userData);
+      setUserEmail(userData.email); // où "email" est l'e-mail obtenu après la connexion
+      setusername(userData.username);
+      console.log(userEmail)
+      console.log(username)
+    
+      // Récupération du cookie
+      const cookie = response.headers['Set-Cookie'];
+
+      // Utilisation d'une expression régulière pour extraire le jeton JWT du cookie
+      const jwtTokenMatch = /delivcrous=([^;]+)/.exec(cookie);
+      if (jwtTokenMatch && jwtTokenMatch.length > 1) {
+        const jwtToken = jwtTokenMatch[1];
+
+        // Stockez le jeton dans AsyncStorage pour une utilisation ultérieure
+        await AsyncStorage.setItem('jwtToken', jwtToken);
+
+        // Configurez Axios pour inclure automatiquement le cookie dans les futures demandes
+        axios.defaults.withCredentials = true;
+      }
+
+      // Marquez l'utilisateur comme connecté
       setIsConnected(true);
+
+      // Naviguez vers la page 'Carte' ou toute autre page souhaitée
       navigation.navigate('Carte');
     } catch (error) {
       console.error('Erreur d\'authentification :', error);
@@ -42,7 +70,7 @@ const PageAccueil = ({ isconnected, setIsConnected }) => {
         <Text style={styles.appName}>Connexion</Text>
       </View>
 
-      <View style={styles.mailContainer}>
+      <View style={styles.inputContainer}>
         <Feather name="mail" size={24} color="black" style={styles.icon} />
         <TextInput
           placeholder="Adresse mail"
@@ -52,12 +80,12 @@ const PageAccueil = ({ isconnected, setIsConnected }) => {
         />
       </View>
 
-      <View style={styles.passwordContainer}>
+      <View style={styles.inputContainer}>
         <Feather name="lock" size={24} color="black" style={styles.icon} />
         <TextInput
           placeholder="Mot de passe"
           secureTextEntry={!showPassword}
-          style={styles.passwordInput}
+          style={styles.input}
           value={password}
           onChangeText={text => setPassword(text)}
         />
@@ -87,7 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   titreDelivecrous: {
-    fontWeight:'bold',
+    fontWeight: 'bold',
     fontSize: 40,
   },
   logo: {
@@ -95,38 +123,24 @@ const styles = StyleSheet.create({
     height: 150,
   },
   appName: {
-    fontWeight:'600',
+    fontWeight: '600',
     fontSize: 24,
     marginTop: 40,
   },
-  input: {
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 20,
     width: '80%',
+    paddingHorizontal: 10,
+  },
+  input: {
+    flex: 1,
     height: 45,
     paddingHorizontal: 10,
-  },
-  mailContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 20,
-    width: '80%',
-    paddingHorizontal: 10,
-  },
-  passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 20,
-    width: '80%',
-    paddingHorizontal: 10,
-  },
-  passwordInput: {
-    paddingLeft: 10,
-    flex: 1,
   },
   showPasswordButton: {
     padding: 10,
@@ -143,7 +157,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   createAccountText: {
-    fontWeight:'400',
+    fontWeight: '400',
     marginTop: 20,
   },
   createAccountContainer: {
@@ -152,10 +166,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   linkText: {
-    fontWeight:'700',
+    fontWeight: '700',
     color: '#007bff',
   },
-
 });
 
 export default PageAccueil;

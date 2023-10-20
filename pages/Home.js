@@ -3,15 +3,14 @@ import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'rea
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { TextInput } from 'react-native';
-import categories from '../assets/data/categories';
-import { Platform } from 'react-native';
 import axios from 'axios';
+import categories from '../assets/data/categories';
+import AddRemoveButtons from '../components/AddRemovebuttons';
+
 
 
 export default function Home() {
-
-  // Remplacez l'URL par l'URL de votre backend
-  const backendUrlPlat = 'http://192.168.166.215:8080/plats/getplats';
+  const backendUrlPlat = 'http://192.168.1.187:8080/api/plats/getplats';
   const [categoriesdata, setCategoriesdata] = useState([]);
 
   useEffect(() => {
@@ -33,7 +32,6 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const renderCategoriesItem = ({ item }) => {
-    // Trouver la quantité de l'article dans le panier
     const itemQuantity = cartItems.filter((cartItem) => cartItem.id === item.id).length;
 
     return (
@@ -42,38 +40,18 @@ export default function Home() {
         <TouchableOpacity style={styles.categoryInfo} onPress={() => handleCategoryPress(item)}>
           <Text style={styles.categoryTitle}>{item.title}</Text>
           <Text style={styles.categoryDescr}>{item.description}</Text>
-          <Text style={styles.categoriePrice}>{item.prix}€</Text>
-
+          <Text style={styles.categoriePrice}>{`${item.prix}€`}</Text>
         </TouchableOpacity>
         {itemQuantity > 0 ? (
-          <View style={styles.adddelButton}>
-            <TouchableOpacity
-              style={styles.adddelstyleButton}
-              onPress={() => {
-                // Retirez un article du panier
-                removeFromCart(item);
-              }}
-            >
-              <Text style={styles.ButtonText}>-</Text>
-            </TouchableOpacity>
-            <Text style={styles.quantityText}>{itemQuantity}</Text>
-            <TouchableOpacity
-              style={styles.adddelstyleButton}
-              onPress={() => {
-                // Ajoutez un article au panier
-                addToCart(item);
-              }}
-            >
-              <Text style={styles.ButtonText}>+</Text>
-            </TouchableOpacity>
-          </View>
+          <AddRemoveButtons
+            itemQuantity={itemQuantity}
+            removeFromCart={() => removeFromCart(item)}
+            addToCart={() => addToCart(item)}
+          />
         ) : (
           <TouchableOpacity
             style={styles.addButton}
-            onPress={() => {
-              // Ajoutez un article au panier
-              addToCart(item);
-            }}
+            onPress={() => addToCart(item)}
           >
             <Text style={styles.ButtonText}>+</Text>
           </TouchableOpacity>
@@ -85,26 +63,20 @@ export default function Home() {
   const navigation = useNavigation();
 
   const handleCategoryPress = (item) => {
-    /*navigation.navigate('DataDetails', { item });*/
-    navigation.push('DataDetails', { item, cartItems, setCartItems })
+    navigation.push('DataDetails', { item, cartItems,setCartItems});
   };
 
   const handleCategoryToggle = (category) => {
-    if (selectedCategory === category) {
-      setSelectedCategory(null);
-    } else {
-      setSelectedCategory(category);
-    }
+    setSelectedCategory(selectedCategory === category ? null : category);
   };
 
   const filteredCategoriesData = selectedCategory
     ? categoriesdata.filter((item) => item.category === selectedCategory)
     : categoriesdata;
 
-  const filteredDataBySearch = filteredCategoriesData.filter((item) => {
-    const itemName = item.title.toLowerCase();
-    return itemName.includes(searchText.toLowerCase());
-  });
+  const filteredDataBySearch = filteredCategoriesData.filter((item) =>
+    item.title.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   const addToCart = (item) => {
     setCartItems([...cartItems, item]);
@@ -115,11 +87,10 @@ export default function Home() {
 
     if (itemIndex !== -1) {
       const updatedCart = [...cartItems];
-      updatedCart.splice(itemIndex, 1); // Retirez un élément à l'index trouvé
+      updatedCart.splice(itemIndex, 1);
       setCartItems(updatedCart);
     }
   };
-
 
   return (
     <View style={styles.container}>
@@ -156,7 +127,6 @@ export default function Home() {
           ))}
         </ScrollView>
 
-        {/* Popular */}
         <Text style={styles.categoriestext}>La carte</Text>
         <View style={styles.popularWrapper}>
           {filteredDataBySearch.map(item => (
@@ -181,10 +151,21 @@ export default function Home() {
   );
 }
 
+const colors = {
+  backgroundColor: '#F5F5F5',
+  textColor: '#333',
+  categoryButtonColor: '#FFFFFF',
+  selectedCategoryButtonColor: '#FFC700',
+  borderColor: '#E0E0E0',
+  searchInputBorder: 1,
+  buttonBackground: '#FFC700',
+  buttonTextColor: 'black',
+};
+
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#F5F5F5',
-    flex: 1
+    backgroundColor: colors.backgroundColor,
+    flex: 1,
   },
   titleWrapper: {
     marginTop: 30,
@@ -193,7 +174,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.textColor,
   },
   categoriestext: {
     fontWeight: 'semibold',
@@ -205,12 +186,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     ...(Platform.OS === 'web'
       ? {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-      }
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+        }
       : {}),
   },
-
   popularCardWrapper: {
     backgroundColor: '#FFF',
     borderRadius: 10,
@@ -222,18 +202,17 @@ const styles = StyleSheet.create({
     position: 'relative',
     ...(Platform.OS === 'web'
       ? {
-        width: 'calc(33.33% - 14px)', // 33.33% pour 3 cartes par ligne et 14px pour l'espacement entre les cartes
-        margin: '7px',
-      }
+          width: 'calc(33.33% - 14px)',
+          margin: '7px',
+        }
       : {}),
   },
   categoryCard: {
     paddingTop: 10,
     paddingBottom: 0,
     alignItems: 'center',
-    flexDirection: 'row', // Pour afficher les éléments côte à côte
-    justifyContent: 'space-between', // Pour les espacer
-
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   categoryImage: {
     width: 100,
@@ -242,7 +221,7 @@ const styles = StyleSheet.create({
   },
   categoryInfo: {
     paddingLeft: 10,
-    flex: 1, // Pour occuper tout l'espace disponible à gauche de l'image
+    flex: 1,
   },
   categoryTitle: {
     fontSize: 18,
@@ -267,7 +246,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     right: 0,
-    backgroundColor: '#FFC700',
+    backgroundColor: colors.buttonBackground,
     width: 85,
     height: 40,
     borderTopLeftRadius: 10,
@@ -278,7 +257,7 @@ const styles = StyleSheet.create({
   ButtonText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'black',
+    color: colors.buttonTextColor,
   },
   adddelButton: {
     position: 'absolute',
@@ -291,28 +270,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   adddelstyleButton: {
-    backgroundColor: '#FFC700',
+    backgroundColor: colors.buttonBackground,
     width: 30,
     height: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 100
-
+    borderRadius: 100,
   },
   quantityText: {
-    padding: 8
+    padding: 8,
   },
   cartButton: {
     position: 'absolute',
-    bottom: 20, // Ajustez la position verticale selon vos préférences
-    left: 20,   // Ajustez la position horizontale selon vos préférences
+    bottom: 20,
+    left: 20,
     backgroundColor: '#FF9900',
     width: 60,
     height: 60,
     borderRadius: 100,
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 2, // Assurez-vous que le bouton est au-dessus du contenu de la ScrollView
+    zIndex: 2,
   },
   cartCounter: {
     position: 'absolute',
@@ -326,15 +304,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 3,
   },
-
   cartCounterText: {
     color: 'white',
     fontSize: 12,
     fontWeight: 'bold',
   },
   categoryButtons: {
-    flexDirection: "row",
-    justifyContent: "space-around",
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     marginTop: 10,
   },
   categoryButton: {
@@ -343,23 +320,23 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 20,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.categoryButtonColor,
     borderWidth: 1,
-    borderColor: "#E0E0E0",
+    borderColor: colors.borderColor,
     alignItems: 'center',
     ...(Platform.OS === 'web'
       ? {
-        width: 220,
-      }
+          width: 220,
+        }
       : {}),
   },
   selectedCategoryButton: {
-    backgroundColor: "#FFC700",
+    backgroundColor: colors.selectedCategoryButtonColor,
   },
   categoryButtonText: {
     fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
+    fontWeight: 'bold',
+    color: colors.textColor,
   },
   searchBar: {
     flexDirection: 'row',
@@ -367,14 +344,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 20,
     paddingVertical: 10,
-
   },
   searchInput: {
     flex: 1,
     height: 40,
     borderRadius: 20,
     paddingHorizontal: 16,
-    borderBottomWidth: 1,
+    borderBottomWidth: colors.searchInputBorder,
   },
   logoCategory: {
     height: 50,
@@ -385,6 +361,5 @@ const styles = StyleSheet.create({
     fontSize: 30,
     marginVertical: 20,
     marginLeft: 20,
-  }
-
+  },
 });
