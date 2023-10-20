@@ -20,7 +20,7 @@ L'application utilise un fichier de configuration nommé `config.json` pour pers
 {
   "IPv4": "192.168.0.100" // Remplacez par l'adresse IP de votre machine ou de votre serveur
 }
-
+```
 
 
 
