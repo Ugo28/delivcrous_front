@@ -18,7 +18,7 @@ L'application Delivecrous est développée en utilisant React Native, une biblio
 L'application utilise un fichier de configuration nommé `config.json` pour personnaliser les paramètres. Assurez-vous de configurer le fichier `config.json` pour spécifier l'adresse IPv4 de votre serveur ou de votre machine. Voici un exemple de contenu pour `config.json` :
 ```json
 {
-  "IPv4": "192.168.0.100" // Remplacez par l'adresse IP de votre machine ou de votre serveur
+  "IPv4": "192.168.0.100" 
 }
 ```
 
@@ -30,14 +30,14 @@ Après avoir configuré le fichier `config.json`, vous pouvez lancer l'applicati
 
 ```shell
 npm start
-
+```
 Assurez-vous d'avoir installé l'application Expo Go sur votre téléphone. Après avoir scanné le QR code généré par votre IDE, vous aurez accès à l'application et pourrez commencer à l'utiliser.
 
 Assurez-vous également d'avoir installé toutes les dépendances requises en utilisant npm install avant de lancer l'application.
 
 ```shell
 npm install
-
+```
 Voici un court résumé de chaque élément du projet :
 
 Carte (Home) :
