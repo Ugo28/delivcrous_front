@@ -103,12 +103,20 @@ export default function Panier({ route, isconnected }) {
       {cart.length > 0 && (
         <TouchableOpacity
           style={styles.validateButton}
-          onPress={() => isconnected ? navigation.navigate('PageConfirmation') : navigation.navigate('PageAccueil')}
+          onPress={() =>
+            isconnected
+              ? navigation.navigate('PageConfirmation', { cart, totalAmount })
+              : navigation.navigate('PageLogin')
+          }
         >
           <Text style={styles.validateButtonText}>
-            {isconnected ? 'Valider le panier' : 'Me connecter et valider le panier'} : {totalAmount}€
+            {isconnected
+              ? 'Valider le panier'
+              : 'Me connecter et valider le panier'}{' '}
+            : {totalAmount}€
           </Text>
         </TouchableOpacity>
+
       )}
     </View>
   );

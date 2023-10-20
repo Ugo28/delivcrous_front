@@ -1,55 +1,56 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Platform,
+  KeyboardAvoidingView,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import axios from 'axios';
 import logo from '../assets/logo.png';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Importez AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
-const PageAccueil = ({ isconnected, setIsConnected }) => {
+const PageLogin = ({ isconnected, setIsConnected }) => {
   const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(false);
   const [username, setusername] = useState('');
   const [password, setPassword] = useState('');
-  const [userEmail, setUserEmail] = useState('');
+  const [loginError, setLoginError] = useState('');
 
   const handleLogin = async () => {
     try {
-      // Effectuez la demande de connexion
-      const response = await axios.post('http://192.168.1.187:8080/api/utilisateurs/login', { username, password });
-      const userData=response.data.body
-      console.log(userData);
-      setUserEmail(userData.email); // où "email" est l'e-mail obtenu après la connexion
-      setusername(userData.username);
-      console.log(userEmail)
-      console.log(username)
-    
-      // Récupération du cookie
-      const cookie = response.headers['Set-Cookie'];
+      setLoginError('');
 
-      // Utilisation d'une expression régulière pour extraire le jeton JWT du cookie
+      const response = await axios.post('http://192.168.1.187:8080/api/utilisateurs/login', { username, password });
+
+      const userData = response.data.body;
+      const UserEmail = userData.email;
+      const UserName = userData.username;
+      const UserId = userData.id;
+      await AsyncStorage.setItem('userEmail', userData.email);
+      await AsyncStorage.setItem('username', userData.username);
+      await AsyncStorage.setItem('userId', UserId.toString());
+
+      const cookie = response.headers['set-cookie'];
       const jwtTokenMatch = /delivcrous=([^;]+)/.exec(cookie);
       if (jwtTokenMatch && jwtTokenMatch.length > 1) {
         const jwtToken = jwtTokenMatch[1];
-
-        // Stockez le jeton dans AsyncStorage pour une utilisation ultérieure
         await AsyncStorage.setItem('jwtToken', jwtToken);
-
-        // Configurez Axios pour inclure automatiquement le cookie dans les futures demandes
         axios.defaults.withCredentials = true;
       }
 
-      // Marquez l'utilisateur comme connecté
       setIsConnected(true);
-
-      // Naviguez vers la page 'Carte' ou toute autre page souhaitée
       navigation.navigate('Carte');
     } catch (error) {
       console.error('Erreur d\'authentification :', error);
+      setLoginError('Identifiants incorrects. Veuillez réessayer.');
     }
   };
-
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -76,7 +77,7 @@ const PageAccueil = ({ isconnected, setIsConnected }) => {
           placeholder="Adresse mail"
           style={styles.input}
           value={username}
-          onChangeText={text => setusername(text)}
+          onChangeText={(text) => setusername(text)}
         />
       </View>
 
@@ -87,12 +88,15 @@ const PageAccueil = ({ isconnected, setIsConnected }) => {
           secureTextEntry={!showPassword}
           style={styles.input}
           value={password}
-          onChangeText={text => setPassword(text)}
+          onChangeText={(text) => setPassword(text)}
         />
         <TouchableOpacity onPress={toggleShowPassword} style={styles.showPasswordButton}>
           <Feather name={showPassword ? 'eye-off' : 'eye'} size={24} color="black" />
         </TouchableOpacity>
       </View>
+
+      {loginError !== '' && <Text style={styles.errorText}>{loginError}</Text>}
+
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Se connecter</Text>
       </TouchableOpacity>
@@ -103,7 +107,7 @@ const PageAccueil = ({ isconnected, setIsConnected }) => {
       </View>
     </KeyboardAvoidingView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   center: {
@@ -136,6 +140,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: '80%',
     paddingHorizontal: 10,
+    ...(Platform.OS === 'web' ? { width: '30%' } : {}),
   },
   input: {
     flex: 1,
@@ -169,6 +174,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#007bff',
   },
+  errorText: {
+    color: 'red',
+    marginTop: 10,
+  },
 });
 
-export default PageAccueil;
+export default PageLogin;

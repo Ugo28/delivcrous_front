@@ -1,27 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ConfirmationDialog from '../components/ConfirmationDisconnected';
 import { Feather } from '@expo/vector-icons';
 import logo from '../assets/logo.png';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Menu = ({ isconnected, setIsConnected }) => {
   const navigation = useNavigation();
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    // Retrieve user data from AsyncStorage
+    const fetchData = async () => {
+      const storedUsername = await AsyncStorage.getItem('username');
+      if (storedUsername) {
+        setUsername(storedUsername);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const goToProfile = () => {
-    // Naviguer vers la page de profil
+    // Navigate to the profile page
     navigation.navigate('MonCompte');
   };
 
   const goToOrders = () => {
-    // Naviguer vers la page des commandes
-    navigation.navigate('Orders');
+    // Navigate to the orders page
+    navigation.navigate('CommandesPage');
   };
 
   const logout = () => {
-    // Afficher la boîte de dialogue de confirmation
+    // Show the confirmation dialog
     setShowConfirmationDialog(true);
   };
 
@@ -31,16 +44,15 @@ const Menu = ({ isconnected, setIsConnected }) => {
   };
 
   const handleCancelLogout = () => {
-    // Annuler la déconnexion en masquant la boîte de dialogue
+    // Cancel logout by hiding the dialog
     setShowConfirmationDialog(false);
   };
 
   return (
     <View style={styles.container}>
-
       <View style={styles.positionlogo}>
-        <Image source={logo} style={styles.taillelogo}/>
-        <Text style={styles.accueilText}>Bonjour Ugo Oglialoro</Text>
+        <Image source={logo} style={styles.taillelogo} />
+        <Text style={styles.accueilText}>Bonjour {username}</Text>
       </View>
       <TouchableOpacity style={styles.menuItem} onPress={goToProfile}>
         <Text style={styles.menuItemText}>Mon Profil</Text>
@@ -51,13 +63,13 @@ const Menu = ({ isconnected, setIsConnected }) => {
       </TouchableOpacity>
 
       <View style={styles.logoutButtonContainer}>
-      <Feather name='log-out' size={20}/>
+        <Feather name="log-out" size={20} />
         <TouchableOpacity onPress={logout}>
           <Text style={styles.logoutButtonText}>Se Déconnecter</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Afficher la boîte de dialogue de confirmation si showConfirmationDialog est vrai */}
+      {/* Show the confirmation dialog if showConfirmationDialog is true */}
       <ConfirmationDialog
         visible={showConfirmationDialog}
         onCancel={handleCancelLogout}
@@ -65,7 +77,7 @@ const Menu = ({ isconnected, setIsConnected }) => {
       />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -74,12 +86,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 40,
   },
-  positionlogo:{
+  positionlogo: {
     alignItems: 'center',
   },
-  taillelogo:{
-    width:50,
-    height:50,
+  taillelogo: {
+    width: 50,
+    height: 50,
   },
   menuItem: {
     paddingVertical: 20,
@@ -101,18 +113,18 @@ const styles = StyleSheet.create({
   },
   logoutButtonText: {
     fontSize: 16,
-    flex:1,
-    paddingLeft:10,
-    fontWeight:'bold'
+    flex: 1,
+    paddingLeft: 10,
+    fontWeight: 'bold',
   },
-  accueilText:{
-    fontSize:30,
-    paddingTop:10,
-    paddingBottom:10
+  accueilText: {
+    fontSize: 30,
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   menuItemText: {
-    fontSize: 17,
-  }
+    fontSize: 20,
+  },
 });
 
 export default Menu;

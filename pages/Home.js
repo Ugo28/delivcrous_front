@@ -1,35 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
+  Platform,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
-import { TextInput } from 'react-native';
 import axios from 'axios';
 import categories from '../assets/data/categories';
 import AddRemoveButtons from '../components/AddRemovebuttons';
 
+const backendUrlPlat = 'http://192.168.1.187:8080/api/plats/getplats';
 
+const colors = {
+  backgroundColor: '#F5F5F5',
+  textColor: '#333',
+  categoryButtonColor: '#FFFFFF',
+  selectedCategoryButtonColor: '#FFC700',
+  borderColor: '#E0E0E0',
+  searchInputBorder: 1,
+  buttonBackground: '#FFC700',
+  buttonTextColor: 'black',
+};
 
 export default function Home() {
-  const backendUrlPlat = 'http://192.168.1.187:8080/api/plats/getplats';
   const [categoriesdata, setCategoriesdata] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     axios.get(backendUrlPlat)
       .then((response) => {
         const data = response.data;
-        data.forEach((item) => {
-          console.log(`image : ${item.image}`);
-        });
         setCategoriesdata(data);
       })
       .catch((error) => {
         console.error('Erreur lors de la récupération des plats:', error);
       });
   }, []);
-
-  const [cartItems, setCartItems] = useState([]);
-  const [searchText, setSearchText] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const renderCategoriesItem = ({ item }) => {
     const itemQuantity = cartItems.filter((cartItem) => cartItem.id === item.id).length;
@@ -49,10 +65,7 @@ export default function Home() {
             addToCart={() => addToCart(item)}
           />
         ) : (
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => addToCart(item)}
-          >
+          <TouchableOpacity style={styles.addButton} onPress={() => addToCart(item)}>
             <Text style={styles.ButtonText}>+</Text>
           </TouchableOpacity>
         )}
@@ -60,10 +73,8 @@ export default function Home() {
     );
   };
 
-  const navigation = useNavigation();
-
   const handleCategoryPress = (item) => {
-    navigation.push('DataDetails', { item, cartItems,setCartItems});
+    navigation.push('DataDetails', { item, cartItems, setCartItems });
   };
 
   const handleCategoryToggle = (category) => {
@@ -83,13 +94,8 @@ export default function Home() {
   };
 
   const removeFromCart = (itemToRemove) => {
-    const itemIndex = cartItems.findIndex((item) => item.id === itemToRemove.id);
-
-    if (itemIndex !== -1) {
-      const updatedCart = [...cartItems];
-      updatedCart.splice(itemIndex, 1);
-      setCartItems(updatedCart);
-    }
+    const updatedCart = cartItems.filter((item) => item.id !== itemToRemove.id);
+    setCartItems(updatedCart);
   };
 
   return (
@@ -106,10 +112,7 @@ export default function Home() {
         </View>
 
         <Text style={styles.CategoryText}>Catégories</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-        >
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {categories.map((category) => (
             <TouchableOpacity
               key={category.id}
@@ -129,7 +132,7 @@ export default function Home() {
 
         <Text style={styles.categoriestext}>La carte</Text>
         <View style={styles.popularWrapper}>
-          {filteredDataBySearch.map(item => (
+          {filteredDataBySearch.map((item) => (
             <View key={item.id} style={styles.popularCardWrapper}>
               {renderCategoriesItem({ item })}
             </View>
@@ -151,30 +154,10 @@ export default function Home() {
   );
 }
 
-const colors = {
-  backgroundColor: '#F5F5F5',
-  textColor: '#333',
-  categoryButtonColor: '#FFFFFF',
-  selectedCategoryButtonColor: '#FFC700',
-  borderColor: '#E0E0E0',
-  searchInputBorder: 1,
-  buttonBackground: '#FFC700',
-  buttonTextColor: 'black',
-};
-
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.backgroundColor,
     flex: 1,
-  },
-  titleWrapper: {
-    marginTop: 30,
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: colors.textColor,
   },
   categoriestext: {
     fontWeight: 'semibold',
@@ -184,12 +167,7 @@ const styles = StyleSheet.create({
   },
   popularWrapper: {
     paddingHorizontal: 20,
-    ...(Platform.OS === 'web'
-      ? {
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-        }
-      : {}),
+    ...(Platform.OS === 'web' ? { flexDirection: 'row', flexWrap: 'wrap' } : {}),
   },
   popularCardWrapper: {
     backgroundColor: '#FFF',
@@ -200,12 +178,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     position: 'relative',
-    ...(Platform.OS === 'web'
-      ? {
-          width: 'calc(33.33% - 14px)',
-          margin: '7px',
-        }
-      : {}),
+    ...(Platform.OS === 'web' ? { width: 'calc(33.33% - 14px)', margin: '7px' } : {}),
   },
   categoryCard: {
     paddingTop: 10,
@@ -324,11 +297,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.borderColor,
     alignItems: 'center',
-    ...(Platform.OS === 'web'
-      ? {
-          width: 220,
-        }
-      : {}),
+    ...(Platform.OS === 'web' ? { width: 220 } : {}),
   },
   selectedCategoryButton: {
     backgroundColor: colors.selectedCategoryButtonColor,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import AddRemoveButtons from '../components/AddRemovebuttons';
 
@@ -7,7 +7,7 @@ export default function DataDetails({ route }) {
   const { item, cartItems } = route.params;
   const [cart, setCart] = useState([]);
 
-  // Effet secondaire pour regrouper les articles du panier
+  // Effect to group cart items
   useEffect(() => {
     const groupedCart = cartItems.reduce((acc, item) => {
       const existingItem = acc.find((group) => group.item.id === item.id);
@@ -59,17 +59,15 @@ export default function DataDetails({ route }) {
   };
 
   return (
-    <View>
+    <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.center}>
         <Text style={styles.detailsTitre}>{item.title}</Text>
-        <Image source={{ uri: item.image }} style={styles.detailsImage} />
+        <Image source={{ uri: item.image }} style={styles.detailsImage} resizeMode="contain" />
         <Text style={styles.detailsDescr}>{item.description}</Text>
       </View>
       <View style={styles.price}>
         <Text style={styles.titleAllergene}>Allergènes :</Text>
-        <View style={styles.listeAllergene}>
-          <Text>{item.allergenes}</Text>
-        </View>
+        <Text style={styles.listeAllergene}>{item.allergenes}</Text>
         <Text style={styles.priceDetails}>{item.prix}€</Text>
       </View>
       {cartItemQuantity > 0 ? (
@@ -85,43 +83,61 @@ export default function DataDetails({ route }) {
         </View>
       ) : (
         <TouchableOpacity style={styles.addToCartButton} onPress={() => incrementCount(item)}>
-          <Feather name="shopping-cart" size={24} color="black" />
+          <Feather name="shopping-cart" size={24} />
           <Text style={styles.addToCartButtonText}>Ajouter au panier</Text>
         </TouchableOpacity>
       )}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    padding: 20,
+  },
   center: {
     alignItems: 'center',
   },
   detailsTitre: {
-    fontSize: 40,
+    fontSize: 30,
     fontWeight: 'bold',
   },
   detailsImage: {
-    width: 429,
-    height: 425,
+    width: 300,
+    height: 300,
+    marginTop: 20,
   },
   detailsDescr: {
-    fontSize: 25,
-    fontWeight: 'semibold',
+    fontSize: 18,
+    fontWeight: 'normal',
+    marginTop: 20,
+    textAlign: 'center',
   },
   price: {
-    paddingLeft: 10,
+    marginTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+    paddingTop: 20,
+  },
+  titleAllergene: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  listeAllergene: {
+    fontSize: 16,
+    marginTop: 5,
   },
   priceDetails: {
-    paddingTop: 20,
-    fontSize: 30,
+    marginTop: 20,
+    fontSize: 28,
     fontWeight: 'bold',
   },
   addToCartButton: {
     backgroundColor: '#FFC700',
     borderRadius: 20,
     marginTop: 20,
-    paddingHorizontal: 20,
     paddingVertical: 10,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -129,15 +145,19 @@ const styles = StyleSheet.create({
   },
   addToCartButtonText: {
     paddingLeft: 10,
-    fontSize: 25,
-  },
-  titleAllergene: {
     fontSize: 20,
-    paddingTop: 5,
+    color: 'black',
     fontWeight: 'bold',
   },
-  listeAllergene: {
+  addOrder: {
     flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: 20,
+    justifyContent: 'center',
+  },
+  addOrderText: {
+    fontSize: 20,
+    paddingRight: 10,
   },
   adddelButton: {
     width: 85,
@@ -145,7 +165,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingLeft: 30,
   },
   ButtonText: {
     fontSize: 20,
@@ -155,15 +174,5 @@ const styles = StyleSheet.create({
   },
   quantityText: {
     padding: 8,
-  },
-  addOrder: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: 20,
-    justifyContent: 'center',
-  },
-  addOrderText: {
-    fontSize: 30,
-    paddingRight: 10,
   },
 });

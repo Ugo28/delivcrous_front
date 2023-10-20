@@ -2,7 +2,7 @@ import logopates from "../images/logo_pates.jpg";
 import logoburger from "../images/logo_burger.jpg";
 import logopizza from "../images/logo_pizza.jpg";
 import logotacos from '../images/logotacos.png';
-import logosushi from '../images/logo_sushi.jpg';
+import logosushi from '../images/logo_sushi.png';
 
 
 const categories = [
