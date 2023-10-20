@@ -5,13 +5,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CommandesPage = () => {
     const [commandes, setCommandes] = useState([]);
+    const config = require('../config.json');
 
     useEffect(() => {
         const fetchCommandes = async () => {
             try {
                 const userToken = await AsyncStorage.getItem('jwtToken');
                 const userId = await AsyncStorage.getItem('userId');
-                const response = await axios.get(`http://192.168.1.187:8080/api/commandes/getcommande?user_id=${userId}`, {
+                const response = await axios.get(`http://`+config.Ipv4+`:8080/api/commandes/getcommande?user_id=${userId}`, {
                     headers: {
                         Cookie: `delivcrous=${userToken}`,
                     },

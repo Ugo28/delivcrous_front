@@ -21,19 +21,22 @@ const PageLogin = ({ isconnected, setIsConnected }) => {
   const [username, setusername] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+  const config = require('../config.json');
 
   const handleLogin = async () => {
     try {
       setLoginError('');
 
-      const response = await axios.post('http://192.168.1.187:8080/api/utilisateurs/login', { username, password });
+      const response = await axios.post('http://'+config.Ipv4+':8080/api/utilisateurs/login', { username, password });
 
       const userData = response.data.body;
       console.log(userData);
       const UserId = userData.id;
+      const UserSolde = userData.solde_crous
       await AsyncStorage.setItem('userEmail', userData.email);
       await AsyncStorage.setItem('username', userData.username);
       await AsyncStorage.setItem('userId', UserId.toString());
+      await AsyncStorage.setItem('solde',UserSolde.toString())
 
       const cookie = response.headers['set-cookie'];
       const jwtTokenMatch = /delivcrous=([^;]+)/.exec(cookie);
@@ -71,9 +74,9 @@ const PageLogin = ({ isconnected, setIsConnected }) => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Feather name="mail" size={24} color="black" style={styles.icon} />
+        <Feather name="user" size={24} color="black" style={styles.icon} />
         <TextInput
-          placeholder="Adresse mail"
+          placeholder="Nom d'usilisateur"
           style={styles.input}
           value={username}
           onChangeText={(text) => setusername(text)}

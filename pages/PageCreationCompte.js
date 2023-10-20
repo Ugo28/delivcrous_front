@@ -27,9 +27,9 @@ const PageCreationCompte = ({ isconnected, setIsConnected }) => {
   const [email, setEmail] = useState('');
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
+  const config = require('../config.json');
 
   const handleLogin = () => {
-    setIsConnected(true);
     navigation.navigate('Carte');
   };
 
@@ -52,9 +52,8 @@ const PageCreationCompte = ({ isconnected, setIsConnected }) => {
       };
 
       try {
-        const response = await axios.post('http://192.168.1.187:8080/api/utilisateurs/register', userData);
+        const response = await axios.post('http://' +config.Ipv4+':8080/api/utilisateurs/register', userData);
 
-        setIsConnected(true);
         setshowConfirmationInscr(true);
       } catch (error) {
         console.error("Erreur d'inscription :", error);

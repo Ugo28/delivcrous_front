@@ -15,7 +15,9 @@ import axios from 'axios';
 import categories from '../assets/data/categories';
 import AddRemoveButtons from '../components/AddRemovebuttons';
 
-const backendUrlPlat = 'http://192.168.1.187:8080/api/plats/getplats';
+const config = require('../config.json');
+const backendUrlPlat = "http://" + config.Ipv4 + ":8080/api/plats/getplats";
+
 
 const colors = {
   backgroundColor: '#F5F5F5',
