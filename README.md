@@ -9,7 +9,6 @@ L'application Delivecrous est développée en utilisant React Native, une biblio
 - **components** : Les composants réutilisables de l'application.
 - **pages** : Les écrans de l'application, chacun dans son propre fichier.
 - **navigation** : La configuration de la navigation entre les écrans.
-- **App.js** : Le point d'entrée de l'application.
 - **node_modules** : Les dépendances du projet.
 - **App.js** : Le composant racine de l'application.
 
