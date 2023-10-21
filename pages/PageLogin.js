@@ -27,25 +27,29 @@ const PageLogin = ({ isconnected, setIsConnected }) => {
     try {
       setLoginError('');
 
-      const response = await axios.post('http://'+config.Ipv4+':8080/api/utilisateurs/login', { username, password });
+      const response = await axios.post('http://' + config.Ipv4 + ':8080/api/utilisateurs/login', { username, password });
 
       const userData = response.data.body;
-      console.log(userData);
+      
       const UserId = userData.id;
       const UserSolde = userData.solde_crous
       await AsyncStorage.setItem('userEmail', userData.email);
       await AsyncStorage.setItem('username', userData.username);
       await AsyncStorage.setItem('userId', UserId.toString());
-      await AsyncStorage.setItem('solde',UserSolde.toString())
+      await AsyncStorage.setItem('solde', UserSolde.toString());
+      await AsyncStorage.setItem('adresse', userData.adresse);
+      await AsyncStorage.setItem('tel', userData.tel)
 
-      const cookie = response.headers['set-cookie'];
+      const cookie = response.data.headers["Set-Cookie"];
       const jwtTokenMatch = /delivcrous=([^;]+)/.exec(cookie);
+
       if (jwtTokenMatch && jwtTokenMatch.length > 1) {
         const jwtToken = jwtTokenMatch[1];
+        console.log("Token JWT : " + jwtToken);
         await AsyncStorage.setItem('jwtToken', jwtToken);
         axios.defaults.withCredentials = true;
       }
-
+      
       setIsConnected(true);
       navigation.navigate('Carte');
     } catch (error) {

@@ -10,8 +10,22 @@ export default function Panier({ route, isconnected }) {
   const [cart, setCart] = useState([]);
   const navigation = useNavigation();
   const config = require('../config.json');
+  const [soldeCrous, setSoldeCrous] = useState(null);
 
   useEffect(() => {
+    const fetchSoldeCrous = async () => {
+      try {
+        const solde = await AsyncStorage.getItem('solde');
+        if (solde) {
+          setSoldeCrous(solde);
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération du solde depuis AsyncStorage :', error);
+      }
+    };
+
+    fetchSoldeCrous();
+
     const groupedCart = cartItems.reduce((acc, item) => {
       const existingItem = acc.find((group) => group.item.id === item.id);
       if (existingItem) {
@@ -63,12 +77,13 @@ export default function Panier({ route, isconnected }) {
   const totalAmount = cart.reduce((total, itemGroup) => total + itemGroup.count * itemGroup.item.prix, 0);
 
   const createOrder = async () => {
-    const address = "123 rue de la livraison"; // Remplacez par l'adresse de livraison de l'utilisateur
-    const status = "en cours"; // Statut de la commande
+    const address = await AsyncStorage.getItem('adresse');
+    const status = "en cours";
     const orderDate = new Date().toISOString();
     const dishes = [];
+    const userToken = await AsyncStorage.getItem('jwtToken');
+    const userId = await AsyncStorage.getItem('userId');
 
-    // Parcourez le panier pour ajouter chaque article en fonction de sa quantité
     cart.forEach((itemGroup) => {
       for (let i = 0; i < itemGroup.count; i++) {
         dishes.push({ id: itemGroup.item.id });
@@ -76,18 +91,15 @@ export default function Panier({ route, isconnected }) {
     });
 
     try {
-      const userToken = await AsyncStorage.getItem('jwtToken');
-      const userId = await AsyncStorage.getItem('userId');
 
-      // Envoyez la requête POST au backend
       const response = await axios.post(
-        `http://`+config.Ipv4+`:8080/api/commandes/createcommande?user_id=${userId}`,
+        `http://` + config.Ipv4 + `:8080/api/commandes/createcommande?user_id=${userId}`,
         {
           adresse_livraison: address,
           status: status,
           date_commande: orderDate,
           plats: dishes,
-          user_id : userId
+          user_id: userId
         },
         {
           headers: {
@@ -97,16 +109,16 @@ export default function Panier({ route, isconnected }) {
         }
       );
 
-      // Gérez la réponse du backend, par exemple, affichez une confirmation à l'utilisateur
+
       console.log('Commande créée avec succès', response.data);
-    
+
       route.params.setCartItems([])
-      // Vous pouvez également réinitialiser le panier ici si nécessaire
+
       navigation.navigate('PageConfirmation', { cart, totalAmount })
 
     } catch (error) {
       console.error("Erreur lors de la création de la commande :", error);
-      // Gérez les erreurs ici et affichez un message d'erreur à l'utilisateur si nécessaire
+
     }
   };
 
@@ -114,7 +126,7 @@ export default function Panier({ route, isconnected }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Votre Panier</Text>
-      <Text style={styles.textSolde}>Mon solde : 60€</Text>
+      <Text style={styles.textSolde}>Mon solde : {soldeCrous}€</Text>
       {cart.length === 0 ? (
         <Text style={styles.emptyCartText}>Votre panier est vide.</Text>
       ) : (

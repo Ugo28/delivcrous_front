@@ -12,7 +12,6 @@ const Menu = ({ isconnected, setIsConnected }) => {
   const [username, setUsername] = useState('');
 
   useEffect(() => {
-    // Retrieve user data from AsyncStorage
     const fetchData = async () => {
       const storedUsername = await AsyncStorage.getItem('username');
       if (storedUsername) {
@@ -24,17 +23,14 @@ const Menu = ({ isconnected, setIsConnected }) => {
   }, []);
 
   const goToProfile = () => {
-    // Navigate to the profile page
     navigation.navigate('MonCompte');
   };
 
   const goToOrders = () => {
-    // Navigate to the orders page
     navigation.navigate('CommandesPage');
   };
 
   const logout = () => {
-    // Show the confirmation dialog
     setShowConfirmationDialog(true);
   };
 
@@ -44,7 +40,6 @@ const Menu = ({ isconnected, setIsConnected }) => {
   };
 
   const handleCancelLogout = () => {
-    // Cancel logout by hiding the dialog
     setShowConfirmationDialog(false);
   };
 
@@ -69,7 +64,6 @@ const Menu = ({ isconnected, setIsConnected }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Show the confirmation dialog if showConfirmationDialog is true */}
       <ConfirmationDialog
         visible={showConfirmationDialog}
         onCancel={handleCancelLogout}

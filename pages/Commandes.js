@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -17,7 +17,18 @@ const CommandesPage = () => {
                         Cookie: `delivcrous=${userToken}`,
                     },
                 });
-                setCommandes(response.data);
+
+                // Reformatter la date de chaque commande
+                const formattedCommandes = response.data.map(commande => {
+                    const dateCommande = new Date(commande.date_commande);
+                    const jour = dateCommande.getDate();
+                    const mois = dateCommande.getMonth() + 1;
+                    const annee = dateCommande.getFullYear();
+                    commande.date_commande = `${jour < 10 ? '0' : ''}${jour}/${mois < 10 ? '0' : ''}${mois}/${annee}`;
+                    return commande;
+                });
+
+                setCommandes(formattedCommandes);
             } catch (error) {
                 console.error("Erreur lors de la récupération des commandes :", error);
             }
@@ -33,9 +44,15 @@ const CommandesPage = () => {
     const renderItem = ({ item }) => (
         <View style={styles.commandeContainer}>
             <Text style={styles.commandeTitle}>Commande #{item.commande_id}</Text>
-            <Text style={styles.commandeText}>Adresse de livraison : {item.adresse_livraison}</Text>
-            <Text style={styles.commandeText}>Statut : {item.status}</Text>
-            <Text style={styles.commandeText}>Date de commande : {item.date_commande}</Text>
+            <Text style={styles.commandeText}>
+                <Text style={styles.subtitle}>Date de commande:</Text> {item.date_commande}
+            </Text>
+            <Text style={styles.commandeText}>
+                <Text style={styles.subtitle}>Adresse de livraison:</Text> {item.adresse_livraison}
+            </Text>
+            <Text style={styles.commandeText}>
+                <Text style={styles.subtitle}>Statut:</Text> {item.status}
+            </Text>
             <Text style={styles.commandeText}>Détails de la commande: </Text>
             {item.plats.length > 0 && (
                 <View style={styles.platsContainer}>
@@ -94,7 +111,10 @@ const styles = StyleSheet.create({
     commandeText: {
         fontSize: 16,
         marginBottom: 5,
-        fontWeight:'500'
+        fontWeight: '500'
+    },
+    subtitle: {
+        fontWeight: 'bold', // Style pour les sous-titres
     },
     platsContainer: {
         marginTop: 5,

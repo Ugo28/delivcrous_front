@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Feather } from '@expo/vector-icons';
 
 const MonCompte = () => {
     const [userEmail, setUserEmail] = useState('');
     const [username, setUsername] = useState('');
     const [solde, setSolde] = useState('');
+    const [adresse, setAdresse] = useState('');
+    const [tel, setTel] = useState('');
+
     useEffect(() => {
-        // Récupérez les données utilisateur depuis AsyncStorage
         const fetchData = async () => {
             const storedUserEmail = await AsyncStorage.getItem('userEmail');
             const storedUsername = await AsyncStorage.getItem('username');
-            const storeSolde = await AsyncStorage.getItem('solde')
+            const storeSolde = await AsyncStorage.getItem('solde');
+            const storeAdresse = await AsyncStorage.getItem('adresse');
+            const storeTel = await AsyncStorage.getItem('tel');
 
-            if (storedUserEmail && storedUsername && storeSolde) {
-                setUserEmail(storedUserEmail);
-                setUsername(storedUsername);
-                setSolde(storeSolde);
-            }
+            setUserEmail(storedUserEmail);
+            setUsername(storedUsername);
+            setSolde(storeSolde);
+            setAdresse(storeAdresse);
+            setTel(storeTel);
         };
 
         fetchData();
@@ -25,18 +30,35 @@ const MonCompte = () => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.userInfoCard}>
-                <Text style={styles.userInfoTitle}>Mes informations</Text>
-                <Text style={styles.userInfoItem}>
-                    <Text style={styles.userInfoLabel}>Nom d'utilisateur:</Text> {username}
-                </Text>
-                <Text style={styles.userInfoItem}>
-                    <Text style={styles.userInfoLabel}>Adresse e-mail:</Text> {userEmail}
-                </Text>
-                <Text style={styles.userInfoItem}>
-                    <Text style={styles.userInfoLabel}>Solde:</Text> {solde} €
-                </Text>
-                {/* Vous pouvez ajouter d'autres informations utilisateur au besoin */}
+            <Text style={styles.userInfoTitle}>Mon Compte</Text>
+            <View style={styles.userInfoItem}>
+                <Feather name="user" size={24} style={styles.icon} />
+                <Text style={styles.userInfoLabel}>Nom d'utilisateur:</Text>
+                <Text style={styles.userInfoText}>{username}</Text>
+            </View>
+
+            <View style={styles.userInfoItem}>
+                <Feather name="mail" size={24} style={styles.icon} />
+                <Text style={styles.userInfoLabel}>Adresse e-mail:</Text>
+                <Text style={styles.userInfoText}>{userEmail}</Text>
+            </View>
+
+            <View style={styles.userInfoItem}>
+                <Feather name="dollar-sign" size={24} style={styles.icon} />
+                <Text style={styles.userInfoLabel}>Solde:</Text>
+                <Text style={styles.userInfoText}>{solde} €</Text>
+            </View>
+
+            <View style={styles.userInfoItem}>
+                <Feather name="map-pin" size={24} style={styles.icon} />
+                <Text style={styles.userInfoLabel}>Adresse:</Text>
+                <Text style={styles.userInfoText}>{adresse}</Text>
+            </View>
+
+            <View style={styles.userInfoItem}>
+                <Feather name="phone" size={24} style={styles.icon} />
+                <Text style={styles.userInfoLabel}>Téléphone:</Text>
+                <Text style={styles.userInfoText}>{tel}</Text>
             </View>
         </View>
     );
@@ -45,34 +67,34 @@ const MonCompte = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: 20,
-    },
-    userInfoCard: {
-        backgroundColor: 'white',
         padding: 20,
-        borderRadius: 10,
-        shadowColor: 'black',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-        elevation: 5,
-        width: '100%',
-        maxWidth: 600,
+        backgroundColor: '#F5F5F5',
     },
     userInfoTitle: {
-        fontSize: 24,
+        fontSize: 28,
         fontWeight: 'bold',
         marginBottom: 20,
         textAlign: 'center',
     },
+    userInfoItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    icon: {
+        marginRight: 15,
+        color: '#007bff',
+    },
     userInfoLabel: {
         fontWeight: 'bold',
-    },
-    userInfoItem: {
+        width: 140,
         fontSize: 18,
-        marginBottom: 10,
+        color: '#333',
+    },
+    userInfoText: {
+        flex: 1,
+        fontSize: 18,
+        color: '#333',
     },
 });
 

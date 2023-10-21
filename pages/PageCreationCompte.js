@@ -45,10 +45,11 @@ const PageCreationCompte = ({ isconnected, setIsConnected }) => {
     if (password1 === password2) {
       const userData = {
         username,
-        phoneNumber,
-        address,
+        tel : phoneNumber,
+        adresse:address,
         email,
         password: password1,
+        solde_crous : 100,
       };
 
       try {
